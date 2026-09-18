@@ -1,5 +1,5 @@
 ---
-title: 'How Alowish Calculates Your Health Risk Score'
+title: 'How Alowish Calculates Your Travel Health Risk Score'
 sidebarTitle: 'How It Works'
 description: 'Learn how Alowish fuses your health profile with real-time environmental data through an 11-subnetwork AI engine to produce your personalized risk score.'
 ---
@@ -25,22 +25,22 @@ Every Alowish risk score is the product of a multi-stage pipeline that begins wi
     Before scoring begins, Alowish's **real-time RADAR layer** pulls live and forecast data for your destination and travel dates from multiple authoritative sources:
 
     <CardGroup cols={2}>
-      <Card title="Air Quality Index (AQI)" icon="wind">
+      <Card title="Air Quality Index (AQI)" icon="wind" href="/concepts/health-risk-score">
         Real-time particulate matter (PM2.5, PM10), ozone, and NO₂ readings from ground stations and satellite feeds. Critical for Respiratory, Cardiac, and Allergy verticals.
       </Card>
-      <Card title="Temperature & Humidity" icon="temperature-half">
+      <Card title="Temperature & Humidity" icon="temperature-half" href="/concepts/health-risk-score">
         Hourly temperature forecasts and humidity levels matched against heat-stress thresholds for Cardiac, Diabetes, Renal, Elderly, and Pregnancy profiles.
       </Card>
-      <Card title="Altitude" icon="mountain">
+      <Card title="Altitude" icon="mountain" href="/concepts/health-risk-score">
         Destination elevation and, where relevant, en-route altitude peaks. Altitude affects oxygen availability, medication efficacy, and cardiac workload.
       </Card>
-      <Card title="Seasonal Disease Calendar" icon="calendar">
+      <Card title="Seasonal Disease Calendar" icon="calendar" href="/concepts/health-risk-score">
         Region- and month-specific prevalence data for infectious diseases, pollen seasons, and vector-borne disease windows (dengue, malaria, Zika, and others).
       </Card>
-      <Card title="Drug-Environment Alerts" icon="pills">
+      <Card title="Drug-Environment Alerts" icon="pills" href="/concepts/health-risk-score">
         Cross-referenced flags raised when a medication in your profile is known to interact adversely with local temperature, humidity, UV index, or altitude conditions.
       </Card>
-      <Card title="Geospatial Infrastructure" icon="hospital">
+      <Card title="Geospatial Infrastructure" icon="hospital" href="/guides/onroute-services">
         Hospital density, trauma-center proximity, pharmacy coverage, and emergency-response time estimates for your specific itinerary coordinates.
       </Card>
     </CardGroup>
@@ -111,16 +111,16 @@ Every Alowish risk score is the product of a multi-stage pipeline that begins wi
 ## Architecture at a Glance
 
 <CardGroup cols={2}>
-  <Card title="343 Parameters" icon="sliders">
+  <Card title="343 Parameters" icon="sliders" href="/concepts/health-risk-score">
     The EBF-NN v3 evaluates 343 distinct parameters spanning clinical, environmental, pharmacological, geospatial, and temporal dimensions.
   </Card>
-  <Card title="11 Specialist Subnetworks" icon="network-wired">
+  <Card title="11 Specialist Subnetworks" icon="network-wired" href="/concepts/health-risk-score">
     Each of the 11 subnetworks (SN1–SN11) is independently trained on domain-specific data before being ensemble-combined in the final scoring layer.
   </Card>
-  <Card title="JAMA 2024 Evidence Base" icon="file-medical">
+  <Card title="JAMA 2024 Evidence Base" icon="file-medical" href="/concepts/health-verticals">
     The cardiac subnetwork (SN1) is directly grounded in a JAMA 2024 LGE-CMR study of 29,687 patients, providing one of the strongest evidence anchors in travel cardiology.
   </Card>
-  <Card title="<80 ms Query Latency" icon="bolt">
+  <Card title="<80 ms Query Latency" icon="bolt" href="/concepts/knowledge-graph">
     Swiss sovereign knowledge-graph infrastructure (QLever, SPARQL/RDF) returns data queries in under 80 milliseconds, enabling near-instant score generation at scale.
   </Card>
 </CardGroup>

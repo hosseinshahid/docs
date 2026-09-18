@@ -1,5 +1,5 @@
 ---
-title: 'Alowish Webhooks: Real-Time Health Risk Alerts'
+title: 'Alowish Webhooks: Real-Time Risk Push Notification API'
 sidebarTitle: 'Webhooks'
 description: 'Register webhook endpoints to receive push notifications when risk scores change, routes update, or environmental conditions shift at a destination.'
 ---
@@ -14,7 +14,45 @@ Webhooks let you move from a polling model to a push model — instead of repeat
 | `route.updated` | The live risk score on a monitored route changes by more than 10 points |
 | `environment.changed` | A major environmental event (heatwave, wildfire smoke, storm) is detected at a monitored destination |
 
-## Register a Webhook
+## POST /v1/webhooks — Register a Webhook
+
+Use this endpoint to register a webhook so Alowish can push event notifications to your server. You can register multiple webhooks with different URLs and event filters.
+
+### Endpoint
+
+```http
+POST /v1/webhooks
+```
+
+### Request Body
+
+<ParamField body="url" type="string" required>
+  The HTTPS URL of your webhook endpoint. Must be publicly reachable and respond within 10 seconds. Plain HTTP URLs are rejected.
+</ParamField>
+
+<ParamField body="events" type="string[]" required>
+  The list of event types you want to receive. Must contain at least one value. Accepted values: `"risk.alert"`, `"route.updated"`, `"environment.changed"`.
+</ParamField>
+
+<ParamField body="secret" type="string" required>
+  A shared secret string (minimum 32 characters) used to sign outgoing payloads with HMAC-SHA256. Store this securely — you will need it to verify every incoming webhook delivery.
+</ParamField>
+
+<ParamField body="description" type="string">
+  An optional human-readable label for this webhook registration, for example `"production-duty-of-care-alerts"`. Visible in the Alowish dashboard under **Settings → Webhooks**.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="webhook_id" type="string">
+  The unique identifier for this webhook registration. Store it — you will need it to update or delete the registration later.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  The current status of the webhook. Newly registered webhooks are always `"active"`. A webhook becomes `"disabled"` automatically after 10 consecutive failed delivery attempts.
+</ResponseField>
+
+### Registration Steps
 
 <Steps>
   <Step title="Prepare your endpoint">
@@ -33,7 +71,8 @@ Webhooks let you move from a polling model to a push model — instead of repeat
       -d '{
         "url": "https://your-app.example.com/webhooks/alowish",
         "events": ["risk.alert", "route.updated", "environment.changed"],
-        "secret": "your_strong_random_secret_here"
+        "secret": "your_strong_random_secret_here",
+        "description": "production-duty-of-care-alerts"
       }'
     ```
 

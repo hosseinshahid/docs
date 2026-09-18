@@ -1,7 +1,7 @@
 ---
-title: 'Swiss Sovereign Data: The QLever Knowledge Graph'
+title: 'Swiss Data Sovereignty and the QLever Knowledge Graph'
 sidebarTitle: 'Knowledge Graph'
-description: "Learn how Alowish's Swiss-hosted QLever knowledge graph — 2.4B medical triples, sub-80 ms queries — powers real-time travel risk with full data sovereignty."
+description: "Learn how Alowish's Swiss-hosted QLever knowledge graph — 2.4B medical triples, sub-80 ms queries — powers real-time travel risk and data sovereignty."
 ---
 
 Every risk score Alowish generates is only as good as the data behind it. Instead of a conventional relational database, Alowish stores and reasons over health information using a **knowledge graph** — a network of structured facts expressed as linked triples — hosted entirely on **Swiss sovereign infrastructure**. This architecture is what makes real-time, personalized, medically nuanced risk assessment possible at scale, and it is what ensures your most sensitive health data never leaves a jurisdiction with some of the world's strongest privacy protections.
@@ -15,19 +15,19 @@ The platform runs on **QLever**, a high-performance SPARQL-over-RDF engine, and 
 ## The Medical Knowledge Base
 
 <CardGroup cols={2}>
-  <Card title="2.4 Billion Medical Triples" icon="database">
+  <Card title="2.4 Billion Medical Triples" icon="database" href="/concepts/knowledge-graph">
     Alowish's aggregate medical knowledge base contains **2.4 billion RDF triples** drawn from peer-reviewed clinical literature, pharmacological databases, epidemiological datasets, and validated travel-medicine guidelines. This is the foundation against which your personal health profile is evaluated.
   </Card>
 
-  <Card title="Sub-80 ms Query Response" icon="bolt">
+  <Card title="Sub-80 ms Query Response" icon="bolt" href="/concepts/knowledge-graph">
     QLever's SPARQL engine resolves even complex multi-hop queries — crossing your health profile, the medical KB, and live environmental data — in under 80 milliseconds. You receive an updated risk score without waiting.
   </Card>
 
-  <Card title="Live Environmental Sources" icon="cloud-sun">
+  <Card title="Live Environmental Sources" icon="cloud-sun" href="/concepts/knowledge-graph">
     Alongside the static medical KB, Alowish continuously queries live data feeds: **Open-Meteo** for hyperlocal weather (temperature, humidity, UV index, barometric pressure) and **AQICN** for real-time Air Quality Index readings. These live values are merged with your health graph on every refresh cycle.
   </Card>
 
-  <Card title="Open Standards" icon="code">
+  <Card title="Open Standards" icon="code" href="/concepts/knowledge-graph">
     RDF and SPARQL are open, vendor-neutral W3C standards. Your data is never locked into a proprietary format — it can be exported, audited, or migrated using any standards-compliant tooling.
   </Card>
 </CardGroup>

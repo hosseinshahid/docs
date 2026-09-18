@@ -1,12 +1,285 @@
 ---
-title: 'POST /v1/risk/assess — Travel Health Risk Score'
+title: 'Risk Assessment API: POST /v1/risk/assess Reference'
 sidebarTitle: 'Risk Assessment'
 description: 'Calculate a personalized travel health risk score (0–100) by fusing a traveler health profile with real-time environmental and route data.'
 ---
 
-The risk assessment endpoint is the core of the Alowish API. Submit a traveler's health profile ID, a destination coordinate, a travel date, and a transport mode, and the engine fuses the traveler's medical history, current medications, and personal risk factors with live environmental data — air quality, temperature, altitude, humidity, and more — to return a composite risk score alongside actionable recommendations and severity-graded alerts. The entire process runs in real time, so the score reflects conditions at the moment of the request, not a static historical average.
+This page covers the core risk assessment workflow: creating and retrieving traveler health profiles (`POST /v1/profile` and `GET /v1/profile/{id}`), then running a full personalized risk assessment (`POST /v1/risk/assess`). Submit a traveler's health profile ID, a destination coordinate, a travel date, and a transport mode, and the engine fuses the traveler's medical history, current medications, and personal risk factors with live environmental data — air quality, temperature, altitude, humidity, and more — to return a composite risk score alongside actionable recommendations and severity-graded alerts. The entire process runs in real time, so the score reflects conditions at the moment of the request, not a static historical average.
 
-## Endpoint
+---
+
+## POST /v1/profile — Create or Update a Health Profile
+
+Before you can request a risk assessment, you need a health profile that captures the traveler's medical conditions, medications, allergies, and personal risk factors. Call `POST /v1/profile` to create a new profile or update an existing one. The endpoint returns a `profile_id` that you pass to `POST /v1/risk/assess`.
+
+### Endpoint
+
+```http
+POST /v1/profile
+```
+
+### Request Body
+
+<ParamField body="user_id" type="string">
+  An optional identifier from your own system to associate with this profile (for example, a user UUID from your database). If omitted, Alowish generates a standalone profile unlinked to an external identity.
+</ParamField>
+
+<ParamField body="conditions" type="string[]">
+  A list of health condition codes representing the traveler's diagnosed conditions. Use the Alowish condition vocabulary — for example, `"cardiac.heart_failure"`, `"respiratory.asthma"`, `"diabetes.type2"`, `"pregnancy.trimester_2"`. See the full condition list in the Alowish dashboard under **Reference → Condition Codes**.
+</ParamField>
+
+<ParamField body="medications" type="string[]">
+  A list of current medication names or codes. The risk engine uses this to model drug–environment interactions — for example, diuretics during extreme heat, or beta-blockers at altitude.
+</ParamField>
+
+<ParamField body="allergies" type="string[]">
+  Known allergies relevant to travel health, for example `"pollen"`, `"dust_mite"`, `"penicillin"`. The engine raises alerts when destination conditions are likely to trigger listed allergens.
+</ParamField>
+
+<ParamField body="age" type="integer">
+  The traveler's age in years. Age is a direct input to the elderly-risk subnetwork (SN11) and modulates baseline cardiovascular risk coefficients.
+</ParamField>
+
+<ParamField body="lge_status" type="string">
+  Late Gadolinium Enhancement status from cardiac MRI, if available. Accepted values: `"positive"`, `"negative"`, or `"unknown"`. Providing LGE status significantly improves cardiac risk accuracy for travelers with known heart disease.
+</ParamField>
+
+<ParamField body="mobility_level" type="string">
+  Indicates any mobility limitation that affects route and terrain risk scoring. Accepted values: `"full"` (no restriction), `"moderate"` (limited stairs/uneven terrain), `"wheelchair"` (requires wheelchair-accessible facilities).
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="profile_id" type="string">
+  The unique identifier for the health profile. Pass this value as `profile_id` in all subsequent `POST /v1/risk/assess` requests.
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  ISO 8601 timestamp indicating when the profile was first created.
+</ResponseField>
+
+<ResponseField name="updated_at" type="string">
+  ISO 8601 timestamp of the most recent update to the profile.
+</ResponseField>
+
+<ResponseField name="completeness" type="number">
+  A 0–100 score indicating how much of the recommended profile data has been provided. Scores above 60 produce fully personalized risk assessments; below 40, the engine falls back to demographic baseline risk.
+</ResponseField>
+
+### Example
+
+<CodeGroup>
+
+```bash curl
+curl -X POST https://api.alowish.com/v1/profile \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user_ext_8821",
+    "conditions": ["cardiac.heart_failure", "diabetes.type2"],
+    "medications": ["metformin", "bisoprolol", "furosemide"],
+    "allergies": ["pollen"],
+    "age": 67,
+    "lge_status": "positive",
+    "mobility_level": "moderate"
+  }'
+```
+
+```javascript JavaScript (fetch)
+const response = await fetch('https://api.alowish.com/v1/profile', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.ALOWISH_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    user_id: 'user_ext_8821',
+    conditions: ['cardiac.heart_failure', 'diabetes.type2'],
+    medications: ['metformin', 'bisoprolol', 'furosemide'],
+    allergies: ['pollen'],
+    age: 67,
+    lge_status: 'positive',
+    mobility_level: 'moderate',
+  }),
+});
+
+const { profile_id, completeness } = await response.json();
+console.log('Profile created:', profile_id, 'Completeness:', completeness);
+```
+
+```python Python (requests)
+import os
+import requests
+
+response = requests.post(
+    'https://api.alowish.com/v1/profile',
+    headers={
+        'Authorization': f'Bearer {os.environ["ALOWISH_API_KEY"]}',
+        'Content-Type': 'application/json',
+    },
+    json={
+        'user_id': 'user_ext_8821',
+        'conditions': ['cardiac.heart_failure', 'diabetes.type2'],
+        'medications': ['metformin', 'bisoprolol', 'furosemide'],
+        'allergies': ['pollen'],
+        'age': 67,
+        'lge_status': 'positive',
+        'mobility_level': 'moderate',
+    },
+)
+
+data = response.json()
+profile_id = data['profile_id']
+print(f'Profile created: {profile_id}, completeness: {data["completeness"]}')
+```
+
+</CodeGroup>
+
+**Example response:**
+
+```json
+{
+  "profile_id": "prof_cardiac_001",
+  "created_at": "2025-08-14T08:00:00Z",
+  "updated_at": "2025-08-14T08:00:00Z",
+  "completeness": 82
+}
+```
+
+---
+
+## GET /v1/profile/{id} — Retrieve a Health Profile
+
+Retrieve a previously created health profile by its ID. Use this endpoint to verify profile contents before running a risk assessment, or to display profile data back to the traveler in your application.
+
+### Endpoint
+
+```http
+GET /v1/profile/{id}
+```
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The `profile_id` returned when the profile was created with `POST /v1/profile`.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="profile_id" type="string">
+  The unique identifier of the profile.
+</ResponseField>
+
+<ResponseField name="user_id" type="string">
+  The external user identifier provided at profile creation, if any.
+</ResponseField>
+
+<ResponseField name="conditions" type="string[]">
+  The list of health condition codes stored on this profile.
+</ResponseField>
+
+<ResponseField name="medications" type="string[]">
+  The list of medication names stored on this profile.
+</ResponseField>
+
+<ResponseField name="allergies" type="string[]">
+  The list of allergy identifiers stored on this profile.
+</ResponseField>
+
+<ResponseField name="age" type="integer">
+  The traveler's age in years.
+</ResponseField>
+
+<ResponseField name="lge_status" type="string">
+  The LGE cardiac MRI status: `"positive"`, `"negative"`, or `"unknown"`.
+</ResponseField>
+
+<ResponseField name="mobility_level" type="string">
+  The stored mobility level: `"full"`, `"moderate"`, or `"wheelchair"`.
+</ResponseField>
+
+<ResponseField name="completeness" type="number">
+  The current profile completeness score (0–100).
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  ISO 8601 creation timestamp.
+</ResponseField>
+
+<ResponseField name="updated_at" type="string">
+  ISO 8601 timestamp of the most recent update.
+</ResponseField>
+
+### Example
+
+<CodeGroup>
+
+```bash curl
+curl -X GET https://api.alowish.com/v1/profile/prof_cardiac_001 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```javascript JavaScript (fetch)
+const profileId = 'prof_cardiac_001';
+
+const response = await fetch(
+  `https://api.alowish.com/v1/profile/${profileId}`,
+  {
+    headers: {
+      Authorization: `Bearer ${process.env.ALOWISH_API_KEY}`,
+    },
+  }
+);
+
+const profile = await response.json();
+console.log('Completeness:', profile.completeness);
+```
+
+```python Python (requests)
+import os
+import requests
+
+profile_id = 'prof_cardiac_001'
+
+response = requests.get(
+    f'https://api.alowish.com/v1/profile/{profile_id}',
+    headers={
+        'Authorization': f'Bearer {os.environ["ALOWISH_API_KEY"]}',
+    },
+)
+profile = response.json()
+print('Conditions:', profile['conditions'])
+```
+
+</CodeGroup>
+
+**Example response:**
+
+```json
+{
+  "profile_id": "prof_cardiac_001",
+  "user_id": "user_ext_8821",
+  "conditions": ["cardiac.heart_failure", "diabetes.type2"],
+  "medications": ["metformin", "bisoprolol", "furosemide"],
+  "allergies": ["pollen"],
+  "age": 67,
+  "lge_status": "positive",
+  "mobility_level": "moderate",
+  "completeness": 82,
+  "created_at": "2025-08-14T08:00:00Z",
+  "updated_at": "2025-08-14T08:00:00Z"
+}
+```
+
+<Note>
+  A profile is not deleted when you request a new assessment — it persists until you explicitly delete it from the Alowish dashboard or call the profile deletion endpoint. You can reuse the same `profile_id` across many risk assessments.
+</Note>
+
+---
+
+## POST /v1/risk/assess — Calculate Health Risk
+
+### Endpoint
 
 ```http
 POST /v1/risk/assess

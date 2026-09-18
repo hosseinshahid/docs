@@ -1,10 +1,10 @@
 ---
-title: 'Destination Conditions and Route Risk Endpoints'
+title: 'Destinations, Routes, and Nearby Services API Docs'
 sidebarTitle: 'Destinations'
 description: 'Retrieve live environmental conditions for any destination, compare health risk across alternative routes, and locate nearby health services by type.'
 ---
 
-Alowish exposes three closely related endpoints for spatial health intelligence: one to fetch the current environmental snapshot at a named destination, one to compare risk across alternative routes between two points, and one to discover health services near any coordinate. Together they give you everything you need to present a traveler with not only a risk score, but also a full picture of the environment they are traveling through and the medical resources available along the way.
+Alowish exposes four closely related endpoints for spatial health intelligence: one to fetch the current environmental snapshot at a named destination, one to compare risk across alternative routes between two points, one to discover health services near any coordinate, and one to initiate a telemedicine consultation for a traveler who needs specialist advice remotely. Together they give you everything you need to present a traveler with not only a risk score, but also a full picture of the environment they are traveling through, the medical resources available along the way, and a direct path to professional medical guidance when needed.
 
 ---
 
@@ -279,6 +279,154 @@ Locate health services and traveler-relevant amenities near any coordinate. Use 
     <ResponseField name="services[].rating" type="number">Average user rating on a 1.0–5.0 scale.</ResponseField>
   </Expandable>
 </ResponseField>
+
+---
+
+## POST /v1/telemedicine/consult — Request a Telemedicine Consultation
+
+When a traveler's risk score indicates significant health concern, or when they need expert advice before or during a trip, you can initiate a telemedicine consultation request on their behalf. This endpoint matches the traveler with an available specialist based on their preferred specialty and urgency level, and returns a video consultation link valid for 24 hours.
+
+### Endpoint
+
+```http
+POST /v1/telemedicine/consult
+```
+
+### Request Body
+
+<ParamField body="user_id" type="string" required>
+  The identifier of the user requesting the consultation. This may be an Alowish `profile_id` or your own external user ID if you have linked profiles.
+</ParamField>
+
+<ParamField body="destination" type="string" required>
+  The name or Alowish destination ID of the location where the traveler will be. Used to match specialists who have knowledge of health conditions prevalent in that region and to account for time-zone scheduling.
+</ParamField>
+
+<ParamField body="preferred_specialty" type="string" required>
+  The medical specialty most relevant to the traveler's concern. Accepted values: `"general"`, `"cardiology"`, `"respiratory"`, `"endocrinology"`, `"neurology"`, `"oncology"`, `"nephrology"`, `"psychiatry"`, `"allergy"`, `"obstetrics"`, `"rheumatology"`, `"geriatrics"`.
+</ParamField>
+
+<ParamField body="urgency" type="string" required>
+  How quickly the consultation is needed. Accepted values: `"routine"` (within 48 hours), `"soon"` (within 4 hours), `"urgent"` (within 30 minutes). Urgent consultations incur an additional fee on applicable plans.
+</ParamField>
+
+<ParamField body="notes" type="string">
+  Optional free-text notes from the traveler describing their concern. Providing context here helps the specialist prepare before the consultation begins.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="consult_id" type="string">
+  A unique identifier for this consultation request. Use it to track status or cancel the consultation via the Alowish dashboard.
+</ResponseField>
+
+<ResponseField name="specialist" type="object">
+  Details of the matched specialist.
+
+  <Expandable title="specialist fields">
+    <ResponseField name="specialist.name" type="string">Full name of the assigned specialist.</ResponseField>
+    <ResponseField name="specialist.specialty" type="string">Medical specialty of the assigned specialist.</ResponseField>
+    <ResponseField name="specialist.credentials" type="string">Abbreviated credentials, for example `"MD, FACC"`.</ResponseField>
+    <ResponseField name="specialist.languages" type="string[]">Languages the specialist can consult in.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="join_url" type="string">
+  A secure HTTPS URL the traveler can open in any supported browser to join the video consultation. The link is valid for **24 hours** from the time of this response.
+</ResponseField>
+
+<ResponseField name="scheduled_at" type="string">
+  ISO 8601 timestamp of the scheduled consultation start time. For `urgent` requests, this is typically within 30 minutes of the API call.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current status of the consultation request. Values: `"scheduled"`, `"in_progress"`, `"completed"`, `"cancelled"`.
+</ResponseField>
+
+### Example
+
+<CodeGroup>
+
+```bash curl
+curl -X POST https://api.alowish.com/v1/telemedicine/consult \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "prof_cardiac_001",
+    "destination": "Athens, Greece",
+    "preferred_specialty": "cardiology",
+    "urgency": "soon",
+    "notes": "Patient has heart failure and is concerned about traveling during the current heatwave."
+  }'
+```
+
+```javascript JavaScript (fetch)
+const response = await fetch('https://api.alowish.com/v1/telemedicine/consult', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.ALOWISH_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    user_id: 'prof_cardiac_001',
+    destination: 'Athens, Greece',
+    preferred_specialty: 'cardiology',
+    urgency: 'soon',
+    notes: 'Patient has heart failure and is concerned about traveling during the current heatwave.',
+  }),
+});
+
+const consult = await response.json();
+console.log('Join URL:', consult.join_url);
+console.log('Scheduled at:', consult.scheduled_at);
+```
+
+```python Python (requests)
+import os
+import requests
+
+response = requests.post(
+    'https://api.alowish.com/v1/telemedicine/consult',
+    headers={
+        'Authorization': f'Bearer {os.environ["ALOWISH_API_KEY"]}',
+        'Content-Type': 'application/json',
+    },
+    json={
+        'user_id': 'prof_cardiac_001',
+        'destination': 'Athens, Greece',
+        'preferred_specialty': 'cardiology',
+        'urgency': 'soon',
+        'notes': 'Patient has heart failure and is concerned about traveling during the current heatwave.',
+    },
+)
+
+consult = response.json()
+print('Consult ID:', consult['consult_id'])
+print('Join URL:', consult['join_url'])
+```
+
+</CodeGroup>
+
+**Example response:**
+
+```json
+{
+  "consult_id": "consult_3d9f1e7a",
+  "specialist": {
+    "name": "Dr. Elena Papadopoulos",
+    "specialty": "cardiology",
+    "credentials": "MD, FESC",
+    "languages": ["English", "Greek", "French"]
+  },
+  "join_url": "https://consult.alowish.com/session/consult_3d9f1e7a?token=eyJh...",
+  "scheduled_at": "2025-08-14T10:15:00Z",
+  "status": "scheduled"
+}
+```
+
+<Warning>
+  The `join_url` contains a short-lived authentication token and should be treated as a secret. Do not log it, cache it server-side beyond the consultation window, or expose it to any party other than the intended traveler.
+</Warning>
 
 ---
 

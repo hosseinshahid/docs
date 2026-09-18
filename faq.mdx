@@ -1,5 +1,5 @@
 ---
-title: 'Frequently Asked Questions About Alowish'
+title: 'Alowish FAQ: Health Risk, Privacy, and API Questions'
 sidebarTitle: 'FAQ'
 description: 'Answers to the most common questions about Alowish — from medical scope and data privacy to API keys, QLever, and cardiac risk measurement with LGE.'
 ---
@@ -43,7 +43,7 @@ Whether you are a first-time user exploring the Alowish app or a developer integ
 </Accordion>
 
 <Accordion title="What is QLever?">
-  QLever is Alowish's proprietary query and reasoning layer that sits on top of the risk scoring engine. It translates natural-language queries — for example, "Is it safe for me to travel to Bangkok in July with my condition?" — into structured API calls, combines the results with contextual health knowledge, and returns a synthesized answer. QLever powers the conversational interface in the Alowish app. Developers can access QLever capabilities via the Alowish chat widget embed or, on Enterprise plans, via a dedicated QLever query endpoint.
+  QLever is a high-performance SPARQL engine and RDF knowledge graph that Alowish uses to store and query structured health and geographic knowledge. It provides sub-80 ms query response times on datasets with hundreds of millions of triples, enabling Alowish to resolve complex health–geography relationships in real time — for example, identifying which destination environmental factors are most relevant for a given combination of health conditions. Alowish operates QLever in a Swiss sovereign hosting environment, meaning your health data and the knowledge graph queries that involve it never leave Swiss jurisdiction. Developers on Enterprise plans can query the Alowish knowledge graph directly via a SPARQL endpoint for advanced analytics and custom risk modelling. For most use cases, QLever operates transparently as the data backbone behind the standard REST API.
 </Accordion>
 
 <Accordion title="Why does Alowish use LGE instead of LVEF for cardiac risk?">

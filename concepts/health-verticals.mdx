@@ -1,7 +1,7 @@
 ---
-title: 'Health Verticals: Conditions Alowish Supports'
+title: 'Health Verticals: The 12 Conditions Alowish Models'
 sidebarTitle: 'Health Verticals'
-description: 'Discover the 12 specialized risk profiles Alowish uses to tailor health assessments to your condition — cardiac, respiratory, diabetes, pregnancy, and more.'
+description: 'Discover the 12 specialized risk profiles Alowish uses to tailor your health assessment — cardiac, respiratory, diabetes, pregnancy, and more.'
 ---
 
 A health vertical is a specialized risk-modeling profile built around a particular category of medical condition. When you add a condition to your Alowish health profile, the platform activates the corresponding vertical — loading the parameters, environmental triggers, and clinical thresholds most relevant to that condition — so your risk score reflects your actual clinical situation rather than a generic population average. Multiple verticals can be active at the same time, and when they are, Alowish's EBF-NN v3 engine calculates interaction effects between them, capturing the compounded risk that co-morbid travelers face.
@@ -9,51 +9,51 @@ A health vertical is a specialized risk-modeling profile built around a particul
 ## The 12 Supported Verticals
 
 <CardGroup cols={2}>
-  <Card title="Cardiac" icon="heart-pulse">
+  <Card title="Cardiac" icon="heart-pulse" href="/guides/health-profile">
     Covers coronary artery disease, heart failure, arrhythmias, valve disease, and post-intervention status. Alowish uses a **JAMA 2024–validated Late Gadolinium Enhancement (LGE) cardiac model** (HR = 2.69, n = 29,687, p &lt; 0.001) — a key clinical differentiator. Standard travel-health systems rely on Left Ventricular Ejection Fraction (LVEF), which carries a non-significant p-value of 0.34 in travel-risk contexts. LGE provides a 2.69× stronger hazard signal, meaning your cardiac risk is assessed with far greater accuracy. The vertical monitors ambient temperature, humidity, altitude, exertion level, and cardiac medication–environment interactions in real time.
   </Card>
 
-  <Card title="Respiratory" icon="lungs">
+  <Card title="Respiratory" icon="lungs" href="/guides/health-profile">
     Covers asthma, COPD, pulmonary fibrosis, sleep apnoea, and chronic bronchitis. Monitors Air Quality Index (AQI), particulate matter (PM2.5 / PM10), pollen count, altitude-induced hypoxia, and humidity extremes. Flags destinations where respiratory triggers are seasonally elevated and highlights days in the travel window with lower AQI forecasts.
   </Card>
 
-  <Card title="Diabetes" icon="droplet">
+  <Card title="Diabetes" icon="droplet" href="/guides/health-profile">
     Covers Type 1, Type 2, and gestational diabetes, as well as pre-diabetes. Monitors heat-related insulin degradation risk, meal timing disruption across time zones, hypoglycaemia risk from increased walking or altitude, and destination-level availability of insulin refrigeration. Alerts fire when ambient temperatures threaten medication storage thresholds.
   </Card>
 
-  <Card title="Oncology" icon="ribbon">
+  <Card title="Oncology" icon="ribbon" href="/guides/health-profile">
     Covers active cancer treatment, post-chemotherapy immunosuppression, and remission monitoring. Assesses endemic infection exposure risk for immunocompromised travelers, UV radiation intensity at destination, altitude effects on blood oxygen saturation, and proximity to oncology-capable hospitals along the route. Flags destinations with limited specialist care coverage.
   </Card>
 
-  <Card title="Neurology" icon="brain">
+  <Card title="Neurology" icon="brain" href="/guides/health-profile">
     Covers epilepsy, multiple sclerosis, Parkinson's disease, migraine, and stroke history. Monitors barometric pressure changes (a known migraine trigger), heat stress on MS symptom severity, seizure-risk elevation from sleep disruption and time-zone shifts, and anticonvulsant–environment interactions. Highlights routes with reliable emergency neurology access.
   </Card>
 
-  <Card title="Renal" icon="filter">
+  <Card title="Renal" icon="filter" href="/guides/health-profile">
     Covers chronic kidney disease (CKD) and dialysis dependency. Monitors dehydration risk from heat and humidity, dietary sodium and potassium availability at destination, the proximity and availability of dialysis centers along the route, and nephrotoxic drug–environment interactions such as NSAID use in hot climates.
   </Card>
 
-  <Card title="Mental Health" icon="face-smile">
+  <Card title="Mental Health" icon="face-smile" href="/guides/health-profile">
     Covers anxiety disorders, depression, bipolar disorder, PTSD, and stress-related conditions. Assesses jet-lag severity and its effect on mood regulation, social isolation risk at remote destinations, access to mental health professionals and telemedicine coverage, and environmental stressors such as extreme weather events or political instability indices.
   </Card>
 
-  <Card title="Allergy" icon="shield-virus">
+  <Card title="Allergy" icon="shield-virus" href="/guides/health-profile">
     Covers food allergies, drug allergies, insect-venom allergy, and environmental allergies (pollen, mold, dust mite). Monitors real-time pollen forecasts, regional food-labeling standards, altitude-related epinephrine auto-injector performance changes, and endemic insect species at destination. Highlights nearby pharmacies and hospitals with allergy and anaphylaxis treatment capability.
   </Card>
 
-  <Card title="Pregnancy" icon="baby">
+  <Card title="Pregnancy" icon="baby" href="/guides/health-profile">
     Covers all trimesters and the early postpartum period. Monitors Zika, malaria, and other teratogenic infection zones, altitude suitability by trimester, heat stress and dehydration risk, access to obstetric facilities along the route, and airline fitness-to-fly windows. Flags destinations where recommended vaccines are contraindicated during pregnancy.
   </Card>
 
-  <Card title="Autoimmune" icon="shield">
+  <Card title="Autoimmune" icon="shield" href="/guides/health-profile">
     Covers rheumatoid arthritis, lupus, inflammatory bowel disease, and other autoimmune conditions, particularly where immunosuppressive therapy is active. Monitors endemic infection risk, UV exposure for photosensitive conditions, cold-weather joint-symptom exacerbation, and biologic medication–climate interactions. Assesses hospital capability for immunosuppressed patient emergencies at destination.
   </Card>
 
-  <Card title="Elderly" icon="person-cane">
+  <Card title="Elderly" icon="person-cane" href="/guides/health-profile">
     Tailored for travelers aged 65 and above, incorporating frailty index parameters and polypharmacy risk. Monitors fall-risk terrain features along the route, heat and cold tolerance thresholds, cognitive load from complex itineraries, and the density of geriatric-capable medical facilities. Adjusts exertion-level thresholds downward to reflect age-related physiological reserves.
   </Card>
 
-  <Card title="Disability" icon="wheelchair">
+  <Card title="Disability" icon="wheelchair" href="/guides/health-profile">
     Covers mobility impairment, sensory impairment, and assistive-device dependency. Assesses wheelchair and accessibility ratings for transport hubs, accommodation, and tourist sites, medical equipment power-supply compatibility at destination, terrain difficulty along proposed routes, and the availability of adapted medical facilities and equipment-service centers.
   </Card>
 </CardGroup>

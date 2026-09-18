@@ -1,7 +1,7 @@
 ---
-title: 'Compare Travel Routes by Health Risk on the Map'
+title: 'Compare Travel Routes by Health Risk Score on the Life Map'
 sidebarTitle: 'Safe Routes'
-description: 'Use the Alowish Life Map route comparison feature to select the travel route with the lowest health risk for your profile, with waypoint-level detail on altitude and AQI.'
+description: 'Use the Alowish Life Map to compare Train, Motorway, and Scenic routes by health risk score, with waypoint detail on altitude, AQI, and nearby hospitals.'
 ---
 
 Not all routes between two points carry the same health risk. A scenic mountain pass and a flat motorway may cover the same distance in similar time, but their altitude profiles, air quality readings, and proximity to emergency care differ enormously — differences that matter significantly for travellers with cardiac, respiratory, or other chronic conditions. Alowish Life Map's route comparison feature surfaces these differences so you can make an informed choice before you set off.
@@ -13,20 +13,20 @@ Not all routes between two points carry the same health risk. A scenic mountain 
 Alowish compares up to three route archetypes for every origin-destination pair:
 
 <CardGroup cols={3}>
-  <Card title="🚆 Train" icon="train">
+  <Card title="🚆 Train" icon="train" href="/guides/safe-routes">
     Follows rail infrastructure. Typically the lowest-risk option for cardiac and respiratory patients due to stable altitude profiles, pressurised and climate-controlled carriages, and regular station access for medical assistance.
   </Card>
-  <Card title="🛣 Motorway" icon="road">
+  <Card title="🛣 Motorway" icon="road" href="/guides/safe-routes">
     Follows major road networks. Mid-range risk profile — faster and more predictable than scenic routes, with good access to roadside services and hospitals in most regions.
   </Card>
-  <Card title="🏔 Scenic" icon="mountain">
+  <Card title="🏔 Scenic" icon="mountain" href="/guides/safe-routes">
     Follows secondary roads through elevated, coastal, or rural terrain. Often the highest-risk option due to altitude gain, distance from emergency care, and variable AQI in mountain valleys and forested areas.
   </Card>
 </CardGroup>
 
-<Note>
+<Warning>
   **Altitude and cardiac risk:** Sustained exposure above **1,500 metres** increases cardiac workload, reduces blood oxygen saturation, and can trigger acute mountain sickness in travellers with heart disease, hypertension, or COPD. Alowish applies an elevated cardiac stress multiplier to any route segment that exceeds this threshold. If your route passes through high-altitude terrain, the score card for that route will flag this explicitly in the Active Risk Factors list.
-</Note>
+</Warning>
 
 ---
 
@@ -74,16 +74,16 @@ Alowish compares up to three route archetypes for every origin-destination pair:
     Tap any waypoint dot to open a popup showing:
 
     <CardGroup cols={2}>
-      <Card title="Altitude" icon="mountain">
+      <Card title="Altitude" icon="mountain" href="/guides/safe-routes">
         Current elevation at this point in metres, and whether it exceeds the 1,500 m cardiac threshold.
       </Card>
-      <Card title="Cardiac Stress %" icon="heart-pulse">
+      <Card title="Cardiac Stress %" icon="heart-pulse" href="/guides/safe-routes">
         Estimated additional cardiac workload at this point relative to sea level, factoring in altitude, temperature, and exertion estimate.
       </Card>
-      <Card title="Air Quality Index" icon="wind">
+      <Card title="Air Quality Index" icon="wind" href="/guides/safe-routes">
         Real-time AQI reading at this location. Particularly relevant for respiratory conditions — COPD and asthma patients should note any AQI above 100.
       </Card>
-      <Card title="Nearest Hospital" icon="hospital">
+      <Card title="Nearest Hospital" icon="hospital" href="/guides/onroute-services">
         Name, distance, and speciality of the closest hospital to this waypoint, ranked by relevance to your health profile.
       </Card>
     </CardGroup>
