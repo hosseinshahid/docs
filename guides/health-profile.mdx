@@ -1,0 +1,166 @@
+---
+title: 'Build Your Alowish Health Profile'
+sidebarTitle: 'Health Profile'
+description: 'Set up your personal health profile in Alowish by entering conditions, BMI, allergies, and vaccines so the AI can calculate accurate travel risk scores.'
+---
+
+Your health profile is the foundation of every risk score Alowish produces. The more completely and accurately you fill it in, the more precisely the platform's AI engine — drawing on **343 clinical and environmental parameters** — can model the real health risks of any journey you plan.
+
+<Note>
+  Alowish evaluates your profile against **343 parameters** spanning clinical guidelines, environmental data, and travel medicine evidence. Each field you complete sharpens the accuracy of your risk score and the relevance of the recommendations you receive.
+</Note>
+
+## Open Your Profile
+
+Navigate to the **Profile** section from the main navigation bar. You will find four tabs — **Conditions**, **Health**, **Allergy**, and **Vaccines** — each covering a distinct dimension of your health. Work through them in order.
+
+---
+
+<Steps>
+
+  <Step title="Conditions Tab — Select Your Chronic Conditions">
+    The Conditions tab presents a set of pill-shaped toggle buttons, one for each recognised condition. Tap or click any pill that applies to you to activate it; tap it again to deactivate.
+
+    The available conditions are:
+
+    | Category | Conditions |
+    |---|---|
+    | Cardiovascular | Heart disease, Hypertension, Previous DVT/PE |
+    | Metabolic | Diabetes, Obesity |
+    | Respiratory | COPD, Asthma |
+    | Oncology | Cancer |
+    | Neurological | MS, Parkinson's, Epilepsy |
+    | Renal & Hepatic | Renal disease, Liver disease |
+    | Immune | Immunocompromised |
+    | Obstetric | Late pregnancy |
+
+    <Warning>
+      Each active condition increases your baseline risk score. Selecting conditions accurately is critical — underreporting will produce a score that understates your true travel risk.
+    </Warning>
+
+    You can select multiple conditions simultaneously. There is no limit to the number of active conditions in your profile.
+  </Step>
+
+  <Step title="Health Tab — Set BMI Range and Personal Factors">
+    The Health tab captures two types of information: your **BMI range** and a set of **personal factor toggles** that provide the AI with important clinical and situational context.
+
+    **BMI Range**
+
+    Select the BMI bracket that best describes you from the dropdown or slider. Alowish uses BMI range — not exact weight — to protect your privacy while still informing relevant risk factors such as cardiovascular strain at altitude.
+
+    **Personal Factors**
+
+    Toggle each factor that applies to your upcoming trip:
+
+    <CardGroup cols={2}>
+      <Card title="Age 65+" icon="user-clock">
+        Enables age-adjusted physiological modelling, including thermoregulation, immune response, and medication interaction risks.
+      </Card>
+      <Card title="Traveling Alone" icon="person-walking">
+        Increases the weight given to emergency-access recommendations and telemedicine readiness in your report.
+      </Card>
+      <Card title="Mobility Impairment" icon="wheelchair">
+        Flags accessibility requirements and surfaces accessible hospital and pharmacy pins on the Life Map.
+      </Card>
+      <Card title="Previous Adverse Travel Event" icon="triangle-exclamation">
+        Signals heightened personal sensitivity; the AI applies a conservative risk margin to its scoring.
+      </Card>
+      <Card title="Medical Professional" icon="stethoscope">
+        Unlocks additional clinical detail in recommendations, including drug dosing notes and differential risk breakdowns.
+      </Card>
+      <Card title="Comprehensive Insurance" icon="shield-check">
+        Adjusts insurance recommendations shown in the Life Map services panel and reduces the insurance-gap risk sub-score.
+      </Card>
+    </CardGroup>
+  </Step>
+
+  <Step title="Allergy Tab — Select Active Allergies">
+    The Allergy tab lists every supported allergen category as pill buttons. Activate each allergy that currently applies to you — not allergies you have grown out of or that are fully controlled.
+
+    <Tabs>
+      <Tab title="Food & Insect">
+        - Food allergies (general)
+        - Insect sting (bee, wasp, hornet)
+      </Tab>
+      <Tab title="Drug & Chemical">
+        - Penicillin
+        - NSAIDs (e.g., ibuprofen, aspirin)
+        - Latex
+      </Tab>
+      <Tab title="Environmental">
+        - Photosensitivity
+        - Hayfever (grass/tree pollen)
+        - Mould spores
+        - Dust mite
+        - Animal dander
+      </Tab>
+    </Tabs>
+
+    Each active allergy feeds directly into destination-specific risk modelling. For example, activating **Hayfever** combined with a spring trip to a high-pollen city will raise the Allergy sub-score and trigger specific antihistamine carry recommendations.
+
+    <Tip>
+      If you carry an **EpiPen** or other emergency allergy medication, ensure you have also entered it in the **Medications** field so Alowish can confirm it in your carry checklist recommendations.
+    </Tip>
+  </Step>
+
+  <Step title="Vaccines Tab — Record Your Vaccination History">
+    The Vaccines tab lets you mark every vaccination or prophylactic medication you have received. Unlike conditions and allergies, **each vaccine you record reduces your overall risk score** by removing a category of preventable illness from your exposure profile.
+
+    Select all vaccines that apply:
+
+    <Accordion title="Routine & Boosters">
+      - Influenza (Flu)
+      - COVID-19
+      - MMR (Measles, Mumps, Rubella)
+      - Varicella (Chickenpox)
+      - Tetanus
+      - Pneumococcal
+      - Polio
+    </Accordion>
+
+    <Accordion title="Travel-Specific">
+      - Hepatitis A
+      - Hepatitis B
+      - Typhoid
+      - Yellow fever
+      - Rabies
+      - Meningococcal
+      - Japanese Encephalitis
+      - Cholera / ETEC
+      - Tick-borne encephalitis
+    </Accordion>
+
+    <Accordion title="Prophylaxis">
+      - Malaria prophylaxis (indicate if currently taking a course)
+    </Accordion>
+
+    <Note>
+      Alowish does not store vaccine dates. If a vaccine you received is no longer within its effective window for your destination, the platform will flag this in the **Active Risk Factors** list on your score card and suggest a booster consultation.
+    </Note>
+  </Step>
+
+</Steps>
+
+---
+
+## How Your Profile Affects Your Score
+
+The table below summarises the directional impact each profile section has on your risk score:
+
+| Profile Section | Effect on Score | Reason |
+|---|---|---|
+| Chronic conditions | ↑ Increases | Each condition adds clinical vulnerability parameters |
+| BMI range (elevated) | ↑ Increases | Higher physiological load at altitude, heat, and exertion |
+| Personal factors | ↑ or ↓ | Depends on factor (e.g., insurance lowers; solo travel raises) |
+| Active allergies | ↑ Increases | Environmental exposure risk at destination |
+| Vaccines recorded | ↓ Decreases | Preventable-disease risk removed from model |
+
+---
+
+## Privacy and Data Security
+
+Your health profile is stored exclusively on **Swiss-based cloud infrastructure**, subject to Swiss data protection law and GDPR. Profile data is encrypted at rest and in transit, and is never sold or shared with third parties. Only you — and any clinician you explicitly invite — can access your profile.
+
+<Tip>
+  Review and update your profile **before every new trip**, even if your health has not changed significantly. Seasonal factors, new medications, and recently administered vaccines can all shift your risk score materially. A profile that was accurate for a winter city break may understate risk for a summer trek at altitude.
+</Tip>

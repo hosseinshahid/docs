@@ -1,0 +1,183 @@
+---
+title: 'Troubleshoot Common Alowish Issues'
+sidebarTitle: 'Troubleshooting'
+description: 'Step-by-step fixes for common Alowish problems — stale risk scores, GPS failures, map errors, API auth issues, rate limits, and telemedicine issues.'
+---
+
+Most issues with Alowish fall into a small number of predictable categories. Work through the relevant section below to diagnose and resolve the problem. Each section starts with the most common cause and moves toward less likely ones, so follow the steps in order before jumping to the next section.
+
+---
+
+## Risk Score Not Updating
+
+Your risk score may appear frozen or show the same value across multiple refreshes.
+
+<Steps>
+  <Step title="Check your environmental data connection">
+    The risk engine requires live environmental feeds to compute an up-to-date score. In the Alowish app, open **Settings → Data Sources** and confirm all environmental feeds show a green status indicator. If any feed shows a warning or error, tap it for details — a temporary outage in a regional AQI or weather feed will cause the score to revert to a cached value. Check the [Alowish status page](https://status.alowish.com) to see if a known outage is affecting your region.
+  </Step>
+  <Step title="Verify your health profile is complete">
+    A profile with very low completeness (below ~40%) may produce a static low score because the engine lacks enough personal data to distinguish risk levels. Open your profile and check the completeness percentage. Add at least one health condition, current medication, or personal risk factor to enable personalized scoring.
+  </Step>
+  <Step title="Force a manual refresh">
+    In the Alowish app, pull down on the risk score card to force a fresh assessment request. If you are using the API, issue a new `POST /v1/risk/assess` request — scores are not cached server-side; each POST triggers a fresh calculation.
+  </Step>
+  <Step title="Check your destination is still valid">
+    If the destination coordinate is outside supported coverage, the score will not update regardless of conditions. Try switching to a nearby major city to confirm the engine is responding.
+  </Step>
+</Steps>
+
+---
+
+## GPS Location Not Found
+
+The app cannot determine your current location, or shows an incorrect position.
+
+<Steps>
+  <Step title="Check browser or device location permissions">
+    In your browser, click the lock icon in the address bar and ensure **Location** is set to **Allow**, not **Block**. On mobile, go to your device **Settings → Privacy → Location Services** and confirm that Alowish has permission set to **While Using App** or **Always**. After granting permission, reload the page.
+  </Step>
+  <Step title="Confirm your device has a GPS or network location signal">
+    In areas with poor GPS signal (indoors, underground, dense urban canyons), your device may fail to acquire a position. Move to a location with a clearer view of the sky or connect to a Wi-Fi network to enable network-assisted positioning.
+  </Step>
+  <Step title="Use manual location entry as a fallback">
+    Tap the search bar on the map and type your current city or address to set your position manually. Alowish will use this as the origin for all risk calculations until GPS becomes available again.
+  </Step>
+  <Step title="Clear browser location cache">
+    Some browsers cache a stale position. In Chrome, open `chrome://settings/content/location`, remove the Alowish entry, and reload the app to trigger a fresh location request.
+  </Step>
+</Steps>
+
+---
+
+## Map Not Loading
+
+The Alowish map view is blank, shows a grey grid, or fails to render tiles.
+
+<Steps>
+  <Step title="Check your network connection">
+    Map tiles require an active internet connection to load. Confirm you can reach other websites. If you are on a corporate network or VPN, the proxy may be blocking tile CDN requests — try on a direct connection.
+  </Step>
+  <Step title="Check Leaflet CDN availability">
+    Alowish uses [Leaflet.js](https://leafletjs.com) for map rendering. If your network or browser is blocking the Leaflet CDN, the map will not initialize. Open your browser's developer console (F12 → Console) and look for errors referencing `leaflet` or `unpkg.com`. If you see blocked resource errors, whitelist `unpkg.com` and `tile.openstreetmap.org` in your network rules.
+  </Step>
+  <Step title="Disable browser extensions">
+    Ad blockers and privacy extensions (uBlock Origin, Privacy Badger) can interfere with map tile loading. Temporarily disable extensions and reload the page to test. If the map loads, add Alowish to your extension's allowlist.
+  </Step>
+  <Step title="Clear browser cache and hard reload">
+    Press `Ctrl + Shift + R` (Windows/Linux) or `Cmd + Shift + R` (Mac) to perform a hard reload that bypasses cached assets. If the map loads after this, a stale cached file was the cause.
+  </Step>
+</Steps>
+
+---
+
+## API Returning 401 Unauthorized
+
+Every API request returns `401 Unauthorized`, even after adding your API key.
+
+<Steps>
+  <Step title="Verify the Authorization header format">
+    The header must be exactly:
+    ```
+    Authorization: Bearer YOUR_API_KEY
+    ```
+    Common mistakes include using `Token` instead of `Bearer`, omitting a space between `Bearer` and the key, or using lowercase `authorization` in environments that do case-sensitive header matching (most HTTP clients handle this automatically, but double-check your custom HTTP wrapper if you have one).
+  </Step>
+  <Step title="Check for whitespace in the key">
+    If you copied your API key from the dashboard and the copy included a leading or trailing space, the key will fail validation. Trim the key string before storing it in your environment variable or secrets manager.
+  </Step>
+  <Step title="Confirm the key has not been revoked">
+    Log in to [app.alowish.com/settings/api-keys](https://app.alowish.com/settings/api-keys) and check that your key shows a green **Active** status. If it shows **Revoked**, generate a new key and update your application configuration.
+  </Step>
+  <Step title="Check you are using the correct key for this environment">
+    If you have separate keys for staging and production, confirm the key in your environment variable matches the environment you are calling. Mixing a staging key against the production base URL (or vice versa) will produce a 401.
+  </Step>
+</Steps>
+
+---
+
+## API Returning 429 Too Many Requests
+
+Requests are failing with `429 Too Many Requests`, meaning you have exceeded your daily rate limit.
+
+<Steps>
+  <Step title="Check your current tier limit">
+    Free tier accounts are limited to **100 requests/day**, Pro to **10,000/day**. Log in to the dashboard and check your usage counter under **Settings → API Keys**. If you are regularly hitting the limit, upgrade your tier.
+  </Step>
+  <Step title="Upgrade your plan">
+    Navigate to [app.alowish.com/settings/billing](https://app.alowish.com/settings/billing) to upgrade from Free to Pro, or contact sales at sales@alowish.com for Enterprise pricing.
+  </Step>
+  <Step title="Add retry logic with exponential backoff">
+    If your application has burst traffic patterns, implement retry logic so that when a `429` is returned your code waits before retrying rather than hammering the API:
+
+    ```javascript
+    async function fetchWithRetry(url, options, retries = 4) {
+      for (let attempt = 0; attempt < retries; attempt++) {
+        const response = await fetch(url, options);
+
+        if (response.status !== 429) return response;
+
+        if (attempt < retries - 1) {
+          const backoff = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s, 8s
+          await new Promise(resolve => setTimeout(resolve, backoff));
+        }
+      }
+      throw new Error('Rate limit exceeded after retries');
+    }
+    ```
+  </Step>
+  <Step title="Cache responses where appropriate">
+    Risk scores for a given profile and destination are stable for approximately 15 minutes (the environmental data refresh interval). Cache the most recent score client-side and only re-request when the cache expires, rather than requesting on every page load or user interaction.
+  </Step>
+</Steps>
+
+---
+
+## Destination Search Returns No Results
+
+Typing a destination name in the search bar returns no suggestions or an empty list.
+
+<Steps>
+  <Step title="Check spelling and try an English transliteration">
+    The geocoding index uses English place names as its primary key. If you typed a place name in a local script (for example, Cyrillic, Arabic, or CJK characters), try the English transliteration — for example, type `Munich` instead of `München`, or `Athens` instead of `Αθήνα`.
+  </Step>
+  <Step title="Try a nearby larger city">
+    Very small towns, villages, and rural localities may not be individually indexed. Try searching for the nearest large city or regional capital and then fine-tune the coordinate manually on the map. The risk score is computed from the coordinate, not the place name, so positioning the pin accurately is what matters.
+  </Step>
+  <Step title="Check geocoding coverage for your region">
+    A small number of regions have limited geocoding coverage due to restricted mapping data availability. The `GET /v1/destinations/{id}/conditions` endpoint will return a `404` for destinations outside covered areas. Check the [coverage map](https://app.alowish.com/coverage) for the current status of your target region.
+  </Step>
+  <Step title="Verify your network is not blocking geocoding requests">
+    The destination search makes requests to the Alowish geocoding service. If you see no results but no error message in the console, a network rule may be silently dropping the request. Check your browser's Network tab (F12) for failed requests to `api.alowish.com`.
+  </Step>
+</Steps>
+
+---
+
+## Telemedicine Consultation Not Connecting
+
+The telemedicine video call fails to start, shows a blank video panel, or immediately disconnects.
+
+<Steps>
+  <Step title="Grant camera and microphone permissions">
+    The telemedicine feature requires access to your device camera and microphone. When prompted, click **Allow**. If you previously denied permissions, open your browser's site settings for Alowish and reset both permissions to **Allow**, then reload the page and try connecting again.
+  </Step>
+  <Step title="Confirm your browser is supported">
+    Alowish telemedicine works on the latest two major versions of **Chrome**, **Firefox**, **Edge**, and **Safari (macOS 14+ / iOS 17+)**. Internet Explorer and older versions of Safari are not supported. If you are on an unsupported browser, switch to Chrome or Firefox.
+  </Step>
+  <Step title="Check for conflicting applications">
+    If another application (a video call client, OBS, or a virtual camera driver) is currently using your camera or microphone, the browser may not be able to access them. Close other applications that use these devices and try again.
+  </Step>
+  <Step title="Test your camera and microphone independently">
+    Visit [https://webcamtests.com](https://webcamtests.com) to verify your camera is working in the browser. If the camera does not work there either, the issue is at the device or driver level, not with Alowish.
+  </Step>
+  <Step title="Check your network for WebRTC restrictions">
+    Telemedicine uses WebRTC for peer-to-peer video. Some corporate firewalls and VPNs block WebRTC traffic or the TURN relay servers required when direct connections fail. Try on a personal network or mobile hotspot to confirm whether the corporate network is the cause.
+  </Step>
+</Steps>
+
+---
+
+<Tip>
+  If you have worked through the relevant steps above and the issue persists, contact the Alowish support team at **support@alowish.com** with the following information: your account email, the approximate time the issue occurred (in UTC), the browser and operating system version you are using, and any error messages from the browser console (F12 → Console). The more detail you provide, the faster the team can diagnose and resolve your issue.
+</Tip>

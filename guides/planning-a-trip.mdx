@@ -1,0 +1,138 @@
+---
+title: 'Plan a Trip: Search Destinations and Compare Risk'
+sidebarTitle: 'Plan a Trip'
+description: 'Search any destination, browse preset risk-rated cities, and view your personalised Alowish travel health risk score before you book.'
+---
+
+Planning a trip with Alowish starts on the home screen, where a search bar, a GPS locator, and a curated set of preset destinations give you multiple ways to kick off your health risk assessment. Every result you pull up is scored specifically for your health profile — not a generic traveller average — so the numbers you see reflect your actual clinical picture.
+
+---
+
+<Steps>
+
+  <Step title="Enter Your Destination in the Search Bar">
+    Tap or click the **search bar** at the top of the screen and type the name of any city, region, or specific place you intend to visit. Alowish uses full geocoding support, so you are not limited to a pre-loaded list — virtually any inhabited location on the globe will resolve to a result.
+
+    As you type, a dropdown of matching suggestions appears. Select the correct result to load the destination's risk profile.
+
+    <Tip>
+      Try searching for a **specific district or resort area** rather than just a city name when your trip involves altitude changes or distinct microclimates. For example, searching "Zermatt" rather than "Switzerland" gives the AI access to local altitude and AQI data, producing a far more accurate cardiac and respiratory score.
+    </Tip>
+  </Step>
+
+  <Step title="Browse Preset Destinations with Risk Badges">
+    Below the search bar, Alowish displays a curated grid of popular travel destinations, each showing a **color-coded risk badge** calculated for your health profile in real time.
+
+    The preset destinations currently available are:
+
+    <CardGroup cols={4}>
+      <Card title="Paris" icon="tower-observation">
+        France
+      </Card>
+      <Card title="Bern" icon="mountain-city">
+        Switzerland
+      </Card>
+      <Card title="Athens" icon="landmark-dome">
+        Greece
+      </Card>
+      <Card title="Dubai" icon="building">
+        UAE
+      </Card>
+      <Card title="Zurich" icon="mountain">
+        Switzerland
+      </Card>
+      <Card title="Vienna" icon="music">
+        Austria
+      </Card>
+      <Card title="Istanbul" icon="mosque">
+        Türkiye
+      </Card>
+      <Card title="Riyadh" icon="sun">
+        Saudi Arabia
+      </Card>
+    </CardGroup>
+
+    Each card displays a badge in one of four colours:
+
+    | Badge Colour | Risk Band | What It Means |
+    |---|---|---|
+    | 🟢 Green | Low | Your profile shows minimal heightened risk for this destination |
+    | 🟡 Amber | Moderate | Some profile factors interact with this destination's conditions |
+    | 🟠 Orange | High | Notable risk factors identified; review recommendations before travelling |
+    | 🔴 Red | Very High | Significant risk interaction; seek clinical advice before booking |
+
+    Tap any preset card to open the full destination risk view.
+  </Step>
+
+  <Step title="Use the GPS Button to Set Your Current Location">
+    Tap the **GPS button** (📍) beside the origin field to automatically populate your current location as the trip's starting point. Alowish uses your device's location service to place a pin on the map and sets this as the route origin for all subsequent route comparisons.
+
+    <Note>
+      Your location data is used only to calculate routes and origin-specific environmental conditions. It is not stored persistently or associated with your health profile records.
+    </Note>
+
+    If you prefer not to share your live location, type your departure city manually in the origin field — the results will be equally accurate.
+  </Step>
+
+  <Step title="View Your Personalised Risk Score for the Destination">
+    Once a destination is selected, Alowish displays the **Risk Score Card** — the primary output of the AI assessment. The card shows:
+
+    - A **percentage figure** (0–100%) representing overall risk
+    - A **color-coded band label** (Low / Moderate / High / Very High)
+    - A **confidence percentage** showing how certain the model is given the available data
+
+    This score is unique to you. Two travellers searching the same destination on the same day will see different scores if their health profiles differ.
+
+    <Tip>
+      Run the same destination search for **two or three different months** to see how seasonal factors — pollen counts, heat indices, altitude cold snaps — shift your score across the year. Use this to choose the travel window with the lowest risk for your profile.
+    </Tip>
+  </Step>
+
+  <Step title="Switch to the Results Tab for a Full Category Breakdown">
+    Tap the **Results** tab beneath the score card to expand the full breakdown of your risk assessment. The Results view surfaces:
+
+    - **Category sub-scores** — individual scores for Vaccination status, Chronic conditions, Active allergies, Environment, and Route type
+    - **Active risk factors** — a prioritised list of the specific factors driving your score, each shown with its point contribution
+    - **Recommendations** — a clinical action list personalised to your profile and destination (e.g., carry GTN spray, pack compression stockings, confirm INR before departure)
+
+    Work through the recommendations list carefully. Each item is sourced from travel medicine guidelines and weighted against your specific conditions and the destination's real-time environmental data.
+  </Step>
+
+</Steps>
+
+---
+
+## Comparing Multiple Destinations
+
+To compare risk across several destinations, run separate searches and note the score and band for each. The color-coded badges in the preset grid make side-by-side comparison intuitive at a glance — a green badge next to a red badge tells you immediately which destination carries less risk for your profile.
+
+<CardGroup cols={2}>
+  <Card title="Lower-Risk Destination Strategy" icon="circle-check">
+    If two destinations both meet your travel goals, choose the one with the lower band. Even a step down from High to Moderate can represent a meaningful reduction in clinical risk, particularly for cardiac or respiratory conditions.
+  </Card>
+  <Card title="Seasonal Risk Comparison" icon="calendar-days">
+    Check the same destination across seasons before booking. A Mediterranean city rated Moderate in October may rise to High in July due to heat stress and elevated ozone AQI — factors that significantly affect cardiovascular and respiratory risk scores.
+  </Card>
+</CardGroup>
+
+---
+
+## Understanding the Risk Badge Colours on Search Results
+
+When you see a risk badge on any destination card or search result, use this guide to interpret it quickly:
+
+<Accordion title="🟢 Low Risk">
+  Your health profile interacts minimally with this destination's environmental and clinical risk factors. Standard travel precautions apply. Review recommendations for any carry-medication reminders.
+</Accordion>
+
+<Accordion title="🟡 Moderate Risk">
+  One or more profile factors create a meaningful interaction with conditions at this destination. Read your active risk factors list and action the recommendations before you travel.
+</Accordion>
+
+<Accordion title="🟠 High Risk">
+  Multiple risk factors are active. Consult the recommendations section in full, consider a telemedicine pre-travel consultation, and ensure your insurance covers your specific conditions at this destination.
+</Accordion>
+
+<Accordion title="🔴 Very High Risk">
+  Significant clinical risk identified for your profile at this destination. A consultation with a travel medicine specialist — available via Alowish Telemedicine — is strongly recommended before confirming travel plans.
+</Accordion>

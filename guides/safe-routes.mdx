@@ -1,0 +1,150 @@
+---
+title: 'Compare Travel Routes by Health Risk on the Map'
+sidebarTitle: 'Safe Routes'
+description: 'Use the Alowish Life Map route comparison feature to select the travel route with the lowest health risk for your profile, with waypoint-level detail on altitude and AQI.'
+---
+
+Not all routes between two points carry the same health risk. A scenic mountain pass and a flat motorway may cover the same distance in similar time, but their altitude profiles, air quality readings, and proximity to emergency care differ enormously — differences that matter significantly for travellers with cardiac, respiratory, or other chronic conditions. Alowish Life Map's route comparison feature surfaces these differences so you can make an informed choice before you set off.
+
+---
+
+## The Three Route Types
+
+Alowish compares up to three route archetypes for every origin-destination pair:
+
+<CardGroup cols={3}>
+  <Card title="🚆 Train" icon="train">
+    Follows rail infrastructure. Typically the lowest-risk option for cardiac and respiratory patients due to stable altitude profiles, pressurised and climate-controlled carriages, and regular station access for medical assistance.
+  </Card>
+  <Card title="🛣 Motorway" icon="road">
+    Follows major road networks. Mid-range risk profile — faster and more predictable than scenic routes, with good access to roadside services and hospitals in most regions.
+  </Card>
+  <Card title="🏔 Scenic" icon="mountain">
+    Follows secondary roads through elevated, coastal, or rural terrain. Often the highest-risk option due to altitude gain, distance from emergency care, and variable AQI in mountain valleys and forested areas.
+  </Card>
+</CardGroup>
+
+<Note>
+  **Altitude and cardiac risk:** Sustained exposure above **1,500 metres** increases cardiac workload, reduces blood oxygen saturation, and can trigger acute mountain sickness in travellers with heart disease, hypertension, or COPD. Alowish applies an elevated cardiac stress multiplier to any route segment that exceeds this threshold. If your route passes through high-altitude terrain, the score card for that route will flag this explicitly in the Active Risk Factors list.
+</Note>
+
+---
+
+## How to Use Route Comparison
+
+<Steps>
+
+  <Step title="Enter Your Origin and Destination">
+    In the Life Map view, tap the **origin field** and type your departure point, or tap the **GPS button** (📍) to use your current location. Then tap the **destination field** and enter your intended endpoint.
+
+    Both fields support geocoding — you can enter a city, a specific address, a landmark, or a region name.
+  </Step>
+
+  <Step title="Tap Go to Build Your Routes">
+    Tap the **Go** button to trigger route generation. Alowish calculates each available route type, overlays real-time RADAR data (altitude, AQI, weather, road conditions) along each path, and scores every route against your health profile. This process typically takes a few seconds.
+
+    All three route cards will appear in the panel below the map once calculation is complete.
+  </Step>
+
+  <Step title="Compare the Route Cards">
+    Each route card displays a compact summary of that route's health risk:
+
+    | Card Element | What It Shows |
+    |---|---|
+    | **Risk percentage** | Overall health risk score for this route, specific to your profile |
+    | **Color bar** | A visual gradient bar from green to red showing risk intensity |
+    | **Route tag** | A contextual label such as **Recommended**, **Moderate risk**, or **Highest risk** |
+    | **Distance & duration** | Approximate travel distance and time |
+    | **Key risk flag** | The single most significant risk factor on this route for your profile |
+
+    <Tip>
+      For most travellers with cardiac conditions, the **Train** route card will display the **Recommended** tag. If the Train route is not available for your route pair (e.g., no rail link exists), Alowish will clearly indicate this and default the recommendation to the next safest option.
+    </Tip>
+  </Step>
+
+  <Step title="Click a Route Card to Highlight It on the Map">
+    Tap any route card to select it. The corresponding route will be highlighted on the Life Map as a thick coloured line. Unselected routes fade to grey so you can focus on the active option.
+
+    The colour of the route line is not uniform — it uses a **risk gradient system** that reflects the health risk level at every point along the route. Read more about this in the section below.
+  </Step>
+
+  <Step title="Tap Waypoint Dots for Detailed Popups">
+    Along each highlighted route, you will see small **waypoint dots** placed at clinically significant intervals — typically where altitude changes, AQI readings, or distance from medical facilities crosses a threshold relevant to your profile.
+
+    Tap any waypoint dot to open a popup showing:
+
+    <CardGroup cols={2}>
+      <Card title="Altitude" icon="mountain">
+        Current elevation at this point in metres, and whether it exceeds the 1,500 m cardiac threshold.
+      </Card>
+      <Card title="Cardiac Stress %" icon="heart-pulse">
+        Estimated additional cardiac workload at this point relative to sea level, factoring in altitude, temperature, and exertion estimate.
+      </Card>
+      <Card title="Air Quality Index" icon="wind">
+        Real-time AQI reading at this location. Particularly relevant for respiratory conditions — COPD and asthma patients should note any AQI above 100.
+      </Card>
+      <Card title="Nearest Hospital" icon="hospital">
+        Name, distance, and speciality of the closest hospital to this waypoint, ranked by relevance to your health profile.
+      </Card>
+    </CardGroup>
+  </Step>
+
+</Steps>
+
+---
+
+## The Risk Gradient Colour System
+
+The route line drawn on the Life Map is not a single colour. It transitions dynamically from **green** through **orange** to **red** based on the health risk level at each point along the route:
+
+<Tabs>
+  <Tab title="🟢 Green Segments">
+    Low risk. The environmental and accessibility conditions at this portion of the route are within safe parameters for your health profile. No specific precautions are needed for this segment.
+  </Tab>
+  <Tab title="🟡 Amber Segments">
+    Moderate risk. One or more risk parameters — typically altitude, AQI, or distance from medical care — are elevated. Maintain hydration, avoid exertion, and note the nearest hospital shown on the waypoint popup.
+  </Tab>
+  <Tab title="🟠 Orange Segments">
+    High risk. Multiple risk factors coincide at this section. If your route includes a long orange segment, consider whether an alternative route avoids it. Check the waypoint popup for the specific drivers.
+  </Tab>
+  <Tab title="🔴 Red Segments">
+    Very high risk. Conditions at this segment pose a significant health challenge for your profile. If your selected route contains red segments, review whether the Train or Motorway option avoids them. Consult telemedicine if you must travel through a red segment.
+  </Tab>
+</Tabs>
+
+---
+
+## Why the Train Route Is Typically Recommended for Cardiac Patients
+
+The Train route earns its **Recommended** status for cardiac profiles for four specific reasons:
+
+<Accordion title="Stable altitude profile">
+  Rail networks are engineered to avoid steep gradients. Where tracks must pass through elevated terrain, they typically do so through tunnels rather than mountain passes, keeping the sustained altitude well below the 1,500 m cardiac threshold.
+</Accordion>
+
+<Accordion title="Climate-controlled environment">
+  Train carriages maintain consistent temperature and humidity, eliminating the heat-stress and cold-shock triggers that can precipitate cardiac events on open roads or in unpressurised vehicles.
+</Accordion>
+
+<Accordion title="Regular hospital access along the route">
+  Major rail routes stop at towns and cities where hospitals are typically located nearby. If a medical emergency occurs, assistance is closer and more accessible than on a rural scenic road.
+</Accordion>
+
+<Accordion title="Lower physical exertion demand">
+  Train travel requires minimal physical effort from the passenger. Motorway driving involves sustained concentration, and scenic routes may require walking or climbing at high-altitude stops — both of which increase cardiac load.
+</Accordion>
+
+---
+
+## Why the Scenic Route Often Scores Highest
+
+<Warning>
+  Scenic routes are flagged as the highest-risk option for the majority of travellers with cardiac, respiratory, or altitude-sensitive profiles. The combination of mountain-pass altitude, distance from emergency care, variable road quality, and physical activity at scenic stops creates a compounding risk profile that Alowish weights heavily in its scoring model. Always review the full risk breakdown before choosing a scenic route.
+</Warning>
+
+The specific factors that raise the Scenic route's score include:
+
+- **Altitude exposure** — many scenic routes cross passes above 1,500 m, sometimes reaching 2,000–3,000 m
+- **AQI variation** — valley air quality in mountain regions can be poor, particularly in winter due to thermal inversions
+- **Hospital distance** — rural scenic routes can pass through long stretches with no hospital within a safe emergency-response window
+- **Physical activity** — scenic stops typically involve walking, climbing, or standing at altitude, all of which increase cardiac and respiratory demand

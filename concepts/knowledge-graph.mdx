@@ -1,0 +1,71 @@
+---
+title: 'Swiss Sovereign Data: The QLever Knowledge Graph'
+sidebarTitle: 'Knowledge Graph'
+description: "Learn how Alowish's Swiss-hosted QLever knowledge graph — 2.4B medical triples, sub-80 ms queries — powers real-time travel risk with full data sovereignty."
+---
+
+Every risk score Alowish generates is only as good as the data behind it. Instead of a conventional relational database, Alowish stores and reasons over health information using a **knowledge graph** — a network of structured facts expressed as linked triples — hosted entirely on **Swiss sovereign infrastructure**. This architecture is what makes real-time, personalized, medically nuanced risk assessment possible at scale, and it is what ensures your most sensitive health data never leaves a jurisdiction with some of the world's strongest privacy protections.
+
+## What a Knowledge Graph Means for You
+
+A knowledge graph stores facts as **RDF triples**: a subject, a predicate, and an object. For example: *"Patient A — has condition — Heart Failure"*, *"Heart Failure — interacts with — Altitude"*, *"Altitude — exceeds threshold at — Destination B"*. By linking millions of such facts together, Alowish can traverse the full chain from your specific diagnosis, through your active medications, to the environmental conditions at your exact destination, and arrive at a clinically coherent risk estimate — not a look-up table answer, but a reasoned conclusion derived from the connections between facts.
+
+The platform runs on **QLever**, a high-performance SPARQL-over-RDF engine, and queries resolve in **under 80 milliseconds**. That sub-80 ms response time is what makes it possible to recalculate your risk score in real time as you move, as weather changes, or as new environmental sensor data arrives — without any perceptible delay on your screen.
+
+## The Medical Knowledge Base
+
+<CardGroup cols={2}>
+  <Card title="2.4 Billion Medical Triples" icon="database">
+    Alowish's aggregate medical knowledge base contains **2.4 billion RDF triples** drawn from peer-reviewed clinical literature, pharmacological databases, epidemiological datasets, and validated travel-medicine guidelines. This is the foundation against which your personal health profile is evaluated.
+  </Card>
+
+  <Card title="Sub-80 ms Query Response" icon="bolt">
+    QLever's SPARQL engine resolves even complex multi-hop queries — crossing your health profile, the medical KB, and live environmental data — in under 80 milliseconds. You receive an updated risk score without waiting.
+  </Card>
+
+  <Card title="Live Environmental Sources" icon="cloud-sun">
+    Alongside the static medical KB, Alowish continuously queries live data feeds: **Open-Meteo** for hyperlocal weather (temperature, humidity, UV index, barometric pressure) and **AQICN** for real-time Air Quality Index readings. These live values are merged with your health graph on every refresh cycle.
+  </Card>
+
+  <Card title="Open Standards" icon="code">
+    RDF and SPARQL are open, vendor-neutral W3C standards. Your data is never locked into a proprietary format — it can be exported, audited, or migrated using any standards-compliant tooling.
+  </Card>
+</CardGroup>
+
+## What 'Sovereign' Means
+
+**Data sovereignty** means that your health data is subject to the laws, regulations, and oversight of a single, defined jurisdiction — and that jurisdiction is **Switzerland**.
+
+- **Swiss hosting** — all QLever knowledge graph nodes run in Swiss data centers. Your RDF triples do not transit to foreign servers for processing.
+- **No vendor lock-in** — because the underlying formats (RDF, SPARQL) are open W3C standards, Alowish is not tied to any single cloud hyperscaler. You benefit from infrastructure diversity without sacrificing performance.
+- **Regulatory alignment** — Swiss data protection law (nDSG) and alignment with GDPR principles mean your health data is governed by clear, enforceable rules about how it may be accessed, processed, and retained.
+- **Auditability** — the graph structure and query logs are auditable by authorized parties, supporting compliance, research ethics review, and your own right of access.
+
+## How It Powers Real-Time Risk Updates While You Travel
+
+As you move along your route, Alowish performs a continuous loop:
+
+<Steps>
+  <Step title="Position update">
+    Your GPS coordinates are sent to the Alowish backend every 60 seconds (or on significant movement).
+  </Step>
+  <Step title="Live data fetch">
+    The platform queries Open-Meteo and AQICN for current conditions at your updated coordinates — temperature, AQI, humidity, UV, barometric pressure.
+  </Step>
+  <Step title="Graph traversal">
+    QLever runs a SPARQL query that traverses your health profile subgraph, the medical knowledge base, and the freshly ingested environmental values simultaneously — resolving the full chain of risk-relevant connections in under 80 ms.
+  </Step>
+  <Step title="Score recalculation">
+    The EBF-NN v3 risk engine receives the graph query results, recalculates your composite risk score and all active medication alerts, and pushes the updated values to your Life Map and score panel.
+  </Step>
+</Steps>
+
+The result is a risk assessment that tracks reality as it unfolds — not a prediction locked in at departure time.
+
+## Your Personal Health Graph
+
+Your health profile — conditions, medications, allergies, vitals history — is stored as your **personal health subgraph** within the broader knowledge graph. It is logically isolated from other users' data, access-controlled at the triple level, and linked (not merged) with the aggregate medical KB. When Alowish reasons about your risk, it traverses the link between your personal subgraph and the medical KB; it does not expose your personal data to the KB or to other users' queries.
+
+<Note>
+  Your personal health data is stored exclusively on Swiss-hosted infrastructure and is never used to train third-party machine learning models or shared with advertisers. You can request a full export of your personal health subgraph in RDF/Turtle format at any time from **Settings → Privacy → Export My Data**.
+</Note>

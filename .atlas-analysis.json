@@ -1,0 +1,85 @@
+{
+  "projectType": "saas",
+  "projectName": "Alowish",
+  "projectDescription": "Alowish is an AI-powered health risk intelligence platform that assesses personalized travel health risks in real time — pairing each user's health profile with destination environmental data to deliver safe-route guidance, clinical recommendations, and access to healthcare services worldwide.",
+  "theme": "almond",
+  "primaryColor": "#ef7025",
+  "lightColor": "#eec9bc",
+  "darkColor": "#4fa1ab",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "how-it-works"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/health-risk-score",
+              "concepts/health-verticals",
+              "concepts/life-map",
+              "concepts/knowledge-graph"
+            ]
+          },
+          {
+            "group": "Using Alowish",
+            "pages": [
+              "guides/health-profile",
+              "guides/planning-a-trip",
+              "guides/reading-your-risk-score",
+              "guides/safe-routes",
+              "guides/onroute-services"
+            ]
+          },
+          {
+            "group": "Integrations & API",
+            "pages": [
+              "api/overview",
+              "api/authentication",
+              "api/risk-assessment",
+              "api/destinations",
+              "api/webhooks"
+            ]
+          },
+          {
+            "group": "Support",
+            "pages": [
+              "faq",
+              "troubleshooting"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Personalized travel health risk scoring using a Bayesian-Fuzzy neural engine (EBF-NN v3, SN1–SN11 subnetworks)",
+    "Real-time RADAR: live weather, air quality (AQI), altitude, and seasonal data fused into the risk score",
+    "Life Map (GIS + AI): interactive smart map showing color-coded route risk, hospitals, pharmacies, healthy restaurants, and safe alternatives",
+    "12 health verticals: Cardiac, Respiratory, Diabetes, Oncology, Neuro, Renal, Mental, Allergy, Pregnancy, Autoimmune, Elderly, Disability",
+    "Route comparison: Train, Motorway, Scenic — each scored and ranked by health risk with waypoint-level breakdowns",
+    "Dr. Alowish AI Chat: conversational AI family doctor that answers travel health questions and shows personalized recommendations on the map",
+    "Telemedicine integration: connect to travel medicine specialists, cardiologists, and other doctors before or during a journey",
+    "Medication and drug-environment interaction alerts (e.g., Warfarin + heat, Beta-blocker + altitude)",
+    "LGE-based cardiac risk model aligned with JAMA 2024 findings (HR=2.69, n=29,687)",
+    "Swiss sovereign data infrastructure powered by QLever knowledge graph (SPARQL, RDF, <80ms queries)",
+    "Partner API for embedding health risk intelligence into travel apps, insurance platforms, and corporate travel systems"
+  ],
+  "publicApiSurface": [
+    "POST /v1/risk/assess — calculate personalized health risk score for a destination",
+    "GET /v1/destinations/{id}/conditions — retrieve environmental health conditions for a location",
+    "GET /v1/routes — compare health risk across travel routes between two points",
+    "GET /v1/services/nearby — find hospitals, pharmacies, and health services near a coordinate",
+    "POST /v1/profile — create or update a user health profile",
+    "GET /v1/profile/{id} — retrieve a health profile",
+    "POST /v1/telemedicine/consult — initiate a telemedicine consultation request",
+    "POST /v1/webhooks — register a webhook endpoint for real-time risk alerts"
+  ]
+}

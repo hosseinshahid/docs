@@ -1,0 +1,168 @@
+---
+title: 'Reading and Acting on Your Alowish Risk Score'
+sidebarTitle: 'Risk Score Guide'
+description: 'Understand every element of your Alowish risk score card — percentage, band, confidence, category breakdown, and clinical recommendations — and know how to act on each.'
+---
+
+Your Alowish risk score is more than a single number. It is a structured clinical summary built from your health profile, real-time environmental data, route characteristics, and travel medicine guidelines. This guide walks you through every component of the score card so you can read it confidently and act on it effectively.
+
+---
+
+## The Score Card at a Glance
+
+When you open a destination result, the score card is the first thing you see. It contains six distinct elements, each carrying actionable information.
+
+<CardGroup cols={3}>
+  <Card title="Risk Percentage" icon="percent">
+    The headline figure: your overall travel health risk expressed as a number from 0 to 100%.
+  </Card>
+  <Card title="Risk Band Label" icon="shield-halved">
+    A color-coded label — Low, Moderate, High, or Very High — that translates the percentage into a clinical action tier.
+  </Card>
+  <Card title="Confidence %" icon="chart-simple">
+    The model's certainty score: how complete and current the data is that underpins your assessment.
+  </Card>
+  <Card title="Score Breakdown" icon="chart-pie">
+    A tab showing each risk category's individual contribution to your total score.
+  </Card>
+  <Card title="Active Risk Factors" icon="list-check">
+    A prioritised list of the specific factors — conditions, allergies, environmental — that are raising your score, each with a point value.
+  </Card>
+  <Card title="Recommendations" icon="notes-medical">
+    A set of clinical actions specific to your profile and destination that reduce your exposure to the identified risks.
+  </Card>
+</CardGroup>
+
+---
+
+## 1. The Risk Percentage (0–100%)
+
+The percentage is your composite travel health risk score, computed by the Alowish AI engine across 343 parameters. A score of **0%** would indicate no identifiable elevated risk factors; a score of **100%** would represent the maximum possible risk loading for a traveller profile. In practice, most scores for travellers with managed conditions fall in the **30–75%** range, with the exact value shifting materially based on destination, season, and route.
+
+The percentage is always **specific to you, this destination, and the current date**. If you change your travel date, update your profile, or select a different route type, the score will recalculate.
+
+---
+
+## 2. The Risk Band Label
+
+The band label converts the percentage into a tiered, action-oriented classification. Use the table below to understand what each band means and what your immediate next steps should be.
+
+| Band | Score Range | Badge Colour | Recommended Action |
+|---|---|---|---|
+| **Low** | 0–24% | 🟢 Green | Standard precautions. Review carry-medication reminders in Recommendations. |
+| **Moderate** | 25–49% | 🟡 Amber | Review all Active Risk Factors. Complete every item in the Recommendations checklist before departure. |
+| **High** | 50–74% | 🟠 Orange | Complete Recommendations and consider a pre-travel telemedicine consultation. Verify insurance coverage for your conditions. |
+| **Very High** | 75–100% | 🔴 Red | Book a telemedicine consultation before confirming travel. Discuss destination alternatives with your travel medicine specialist. |
+
+<Warning>
+  A **Very High** band does not mean travel is impossible, but it does mean that untreated risks could lead to a serious medical event abroad. Use the telemedicine service to get a specialist opinion and a mitigation plan before you depart.
+</Warning>
+
+---
+
+## 3. The Confidence Percentage
+
+The confidence figure appears alongside the risk band and tells you how certain the AI model is about its assessment. Confidence is determined by:
+
+- **Data completeness** — how fully you have filled in your health profile
+- **Data freshness** — how current the real-time RADAR data is for the destination (live weather, AQI, altitude readings)
+- **Destination coverage** — whether the destination has rich historical and clinical data in the Alowish knowledge base
+
+<Tip>
+  A confidence score below **70%** usually means your health profile has unfilled sections. Return to your profile and complete the Conditions, Allergy, or Vaccines tabs to push confidence higher — and make your risk score more precise.
+</Tip>
+
+A high confidence score (above 85%) means the model has everything it needs to give you a reliable assessment. A lower score does not mean the result is wrong — it means there is more uncertainty, so you should treat the score conservatively.
+
+---
+
+## 4. The Score Breakdown Tab
+
+Tap **Breakdown** on the score card to see how each risk category contributes to your total. The five categories and what drives each are:
+
+<Accordion title="Vaccination Status">
+  Reflects the gap between your recorded vaccines and the full recommended vaccination schedule for your destination. Each missing or lapsed vaccine adds points. Each confirmed vaccine removes a portion of the preventable-disease risk from your score. This category rewards a complete vaccine history.
+</Accordion>
+
+<Accordion title="Chronic Conditions">
+  The largest single driver for most travellers with underlying health issues. Each active condition in your profile is cross-referenced against the destination's environmental and logistical stressors — altitude, heat, humidity, healthcare accessibility — and scored accordingly.
+</Accordion>
+
+<Accordion title="Active Allergies">
+  Compares your active allergen sensitivities against the destination's known allergen environment: pollen season data, local food ingredient norms, insect species prevalence, and air quality. High pollen cities during spring will raise this score for hayfever profiles.
+</Accordion>
+
+<Accordion title="Environment Factors">
+  Draws on real-time RADAR data — live AQI, temperature, humidity, altitude, UV index, and seasonal disease outbreaks — to score the ambient health challenge the destination presents on your travel dates.
+</Accordion>
+
+<Accordion title="Route Type">
+  Reflects the risk profile of the route you have selected or that the system has defaulted to. Train routes typically score lowest for cardiac patients; scenic routes via mountain passes often score highest due to altitude exposure. See the [Safe Routes guide](/guides/safe-routes) for a full explanation.
+</Accordion>
+
+---
+
+## 5. Active Risk Factors
+
+The Active Risk Factors list shows you exactly which data points are contributing most to your score, in descending order of point value. Each item includes:
+
+- The **factor name** (e.g., "Hypertension + high AQI destination", "Hayfever — peak pollen season", "No hepatitis A vaccine on record")
+- The **point contribution** it adds to your score
+- A brief explanation of the clinical mechanism
+
+This list is your shortcut to understanding what is actually driving your risk, and which items you can take action on before you travel (e.g., getting a vaccine, adjusting your route, or carrying an additional medication).
+
+---
+
+## 6. Recommendations
+
+The Recommendations section is the most directly actionable output Alowish produces. Recommendations are clinical instructions generated from your health profile, the destination's risk environment, and evidence-based travel medicine guidelines. Common examples include:
+
+<CardGroup cols={2}>
+  <Card title="GTN Spray" icon="heart-pulse">
+    Carry glyceryl trinitrate spray for cardiac patients travelling to high-altitude or high-exertion destinations. Ensure spray is accessible in hand luggage, not checked baggage.
+  </Card>
+  <Card title="Insulin in Carry-On" icon="syringe">
+    Always pack insulin and testing equipment in your carry-on bag. Temperature extremes in cargo holds can degrade insulin. Carry a doctor's letter confirming the need for sharps.
+  </Card>
+  <Card title="EpiPen" icon="kit-medical">
+    Carry two EpiPens if you have a severe allergy profile. Confirm destination pharmacies stock your adrenaline brand, or carry a sufficient supply from home.
+  </Card>
+  <Card title="Compression Stockings" icon="person-walking">
+    Recommended for cardiac patients and travellers with previous DVT/PE on flights over four hours. Wear from check-in, not just during the flight.
+  </Card>
+  <Card title="Blood Pressure Check" icon="stethoscope">
+    Check and log blood pressure in the 48 hours before departure and within 24 hours of arrival. High-altitude destinations may cause acute BP elevation in hypertensive travellers.
+  </Card>
+  <Card title="Hydration Protocol" icon="droplet">
+    Increase fluid intake in hot and high-altitude destinations. For renal and cardiac patients, follow any fluid-restriction guidance from your specialist rather than the general recommendation.
+  </Card>
+</CardGroup>
+
+<Note>
+  Recommendations are **clinical suggestions informed by travel medicine guidelines**, not a substitute for advice from your own physician or a travel medicine specialist. If any recommendation conflicts with guidance you have already received from your doctor, follow your doctor's guidance and raise the discrepancy in a telemedicine consultation.
+</Note>
+
+---
+
+## Putting It All Together
+
+When you open a score card, follow this sequence:
+
+<Steps>
+  <Step title="Read the band label first">
+    It tells you immediately what level of response is required — from standard precautions (Low) to specialist consultation (Very High).
+  </Step>
+  <Step title="Check the confidence percentage">
+    If it is below 70%, update your profile before making any travel decisions based on the score.
+  </Step>
+  <Step title="Open the breakdown tab">
+    Identify which categories are driving your score so you know where to focus your preparation.
+  </Step>
+  <Step title="Review the Active Risk Factors list">
+    Note which factors you can mitigate before travel (vaccines, medications, route choice) and which are fixed (chronic conditions).
+  </Step>
+  <Step title="Work through every Recommendation">
+    Treat each item as a pre-departure checklist. Tick them off as you prepare. For High or Very High scores, book a telemedicine consultation to go through the list with a specialist.
+  </Step>
+</Steps>

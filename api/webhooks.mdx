@@ -1,0 +1,254 @@
+---
+title: 'Alowish Webhooks: Real-Time Health Risk Alerts'
+sidebarTitle: 'Webhooks'
+description: 'Register webhook endpoints to receive push notifications when risk scores change, routes update, or environmental conditions shift at a destination.'
+---
+
+Webhooks let you move from a polling model to a push model — instead of repeatedly calling the API to check whether a traveler's risk situation has changed, Alowish sends an HTTP POST to your endpoint the moment something important happens. This is particularly valuable for travel operations centers, insurance underwriting systems, and duty-of-care platforms that need to react to changing conditions in near-real time, without burning through rate-limit quota.
+
+## Supported Events
+
+| Event | Trigger |
+|-------|---------|
+| `risk.alert` | A traveler's risk score crosses a configured threshold (default: 60) |
+| `route.updated` | The live risk score on a monitored route changes by more than 10 points |
+| `environment.changed` | A major environmental event (heatwave, wildfire smoke, storm) is detected at a monitored destination |
+
+## Register a Webhook
+
+<Steps>
+  <Step title="Prepare your endpoint">
+    Create an HTTPS endpoint on your server that can receive POST requests and respond with HTTP `200` within **10 seconds**. If your server does not respond in time, Alowish treats the delivery as failed and queues a retry.
+  </Step>
+  <Step title="Generate a shared secret">
+    Choose a strong random string (at least 32 characters) to use as your webhook `secret`. You will use this to verify that incoming payloads genuinely originated from Alowish.
+  </Step>
+  <Step title="Register the webhook via API">
+    Call `POST /v1/webhooks` with your endpoint URL, the list of events you want to receive, and your secret.
+
+    ```bash
+    curl -X POST https://api.alowish.com/v1/webhooks \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "url": "https://your-app.example.com/webhooks/alowish",
+        "events": ["risk.alert", "route.updated", "environment.changed"],
+        "secret": "your_strong_random_secret_here"
+      }'
+    ```
+
+    On success, the API responds with:
+
+    ```json
+    {
+      "webhook_id": "wh_7f3a2b9c1d",
+      "status": "active"
+    }
+    ```
+
+    Store the `webhook_id` — you will need it to update or delete this webhook registration later.
+  </Step>
+  <Step title="Verify the signature on every incoming request">
+    Every webhook delivery includes an `X-Alowish-Signature` header containing an HMAC-SHA256 digest of the raw request body, signed with your secret. Always verify this signature before processing the payload.
+  </Step>
+  <Step title="Handle the event payload">
+    Parse the JSON body, check the `event` field, and route to the appropriate handler in your application.
+  </Step>
+</Steps>
+
+## Verifying the HMAC-SHA256 Signature
+
+The `X-Alowish-Signature` header value is formatted as:
+
+```
+sha256=<hex_digest>
+```
+
+Compute the expected digest by running HMAC-SHA256 over the **raw request body bytes** using your webhook secret, then compare it to the received value using a constant-time comparison to prevent timing attacks.
+
+<Warning>
+  Never skip signature verification. Without it, any party that discovers your webhook URL can send forged payloads to your system.
+</Warning>
+
+<CodeGroup>
+
+```javascript Node.js (Express)
+const crypto = require('crypto');
+
+function verifyAlowishSignature(rawBody, signature, secret) {
+  const expected = 'sha256=' + crypto
+    .createHmac('sha256', secret)
+    .update(rawBody)          // rawBody must be the raw Buffer, not parsed JSON
+    .digest('hex');
+
+  // Use timingSafeEqual to prevent timing attacks
+  const expectedBuf = Buffer.from(expected, 'utf8');
+  const receivedBuf = Buffer.from(signature, 'utf8');
+
+  if (expectedBuf.length !== receivedBuf.length) return false;
+  return crypto.timingSafeEqual(expectedBuf, receivedBuf);
+}
+
+// Express route handler
+app.post('/webhooks/alowish', express.raw({ type: 'application/json' }), (req, res) => {
+  const signature = req.headers['x-alowish-signature'];
+  const secret = process.env.ALOWISH_WEBHOOK_SECRET;
+
+  if (!verifyAlowishSignature(req.body, signature, secret)) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  const event = JSON.parse(req.body);
+  handleAlowishEvent(event);
+
+  res.status(200).send('OK');
+});
+
+function handleAlowishEvent(event) {
+  switch (event.event) {
+    case 'risk.alert':
+      console.log('Risk threshold exceeded:', event.data);
+      break;
+    case 'route.updated':
+      console.log('Route risk changed:', event.data);
+      break;
+    case 'environment.changed':
+      console.log('Environmental event detected:', event.data);
+      break;
+    default:
+      console.log('Unknown event type:', event.event);
+  }
+}
+```
+
+```python Python (Flask)
+import hashlib
+import hmac
+import os
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+def verify_alowish_signature(raw_body: bytes, signature: str, secret: str) -> bool:
+    expected = 'sha256=' + hmac.new(
+        secret.encode('utf-8'),
+        raw_body,
+        hashlib.sha256,
+    ).hexdigest()
+    # Use compare_digest for constant-time comparison
+    return hmac.compare_digest(expected, signature)
+
+@app.route('/webhooks/alowish', methods=['POST'])
+def alowish_webhook():
+    signature = request.headers.get('X-Alowish-Signature', '')
+    secret = os.environ['ALOWISH_WEBHOOK_SECRET']
+
+    if not verify_alowish_signature(request.get_data(), signature, secret):
+        return jsonify({'error': 'Invalid signature'}), 401
+
+    event = request.get_json()
+    handle_event(event)
+
+    return 'OK', 200
+
+def handle_event(event):
+    event_type = event.get('event')
+    if event_type == 'risk.alert':
+        print('Risk threshold exceeded:', event['data'])
+    elif event_type == 'route.updated':
+        print('Route risk changed:', event['data'])
+    elif event_type == 'environment.changed':
+        print('Environmental event detected:', event['data'])
+```
+
+</CodeGroup>
+
+## Event Payloads
+
+Each webhook delivery shares the same envelope structure, with an `event` field identifying the type and a `data` object containing the event-specific payload.
+
+### `risk.alert`
+
+Sent when a traveler's computed risk score crosses the alert threshold (default 60, configurable in the dashboard).
+
+```json
+{
+  "event": "risk.alert",
+  "webhook_id": "wh_7f3a2b9c1d",
+  "timestamp": "2025-08-14T07:23:11Z",
+  "data": {
+    "profile_id": "prof_cardiac_001",
+    "destination": "Athens, Greece",
+    "risk_score": 74,
+    "risk_level": "high",
+    "threshold_crossed": 60,
+    "alerts": [
+      {
+        "type": "heat_stress",
+        "severity": "critical",
+        "message": "Extreme heat forecast (41 °C) significantly elevates cardiac risk for this profile."
+      }
+    ]
+  }
+}
+```
+
+### `route.updated`
+
+Sent when the live risk score on a monitored route changes by more than 10 points — for example, due to a sudden wildfire or road closure raising risk at a waypoint.
+
+```json
+{
+  "event": "route.updated",
+  "webhook_id": "wh_7f3a2b9c1d",
+  "timestamp": "2025-08-14T11:45:02Z",
+  "data": {
+    "route_type": "Motorway",
+    "profile_id": "prof_abc123",
+    "origin": "Munich, Germany",
+    "destination": "Venice, Italy",
+    "previous_risk_score": 33,
+    "current_risk_score": 51,
+    "delta": 18,
+    "reason": "Wildfire smoke detected near Brenner Pass raising AQI to 172."
+  }
+}
+```
+
+### `environment.changed`
+
+Sent when a significant environmental event is detected at a monitored destination — heatwave onset, major AQI spike, storm warning, or similar.
+
+```json
+{
+  "event": "environment.changed",
+  "webhook_id": "wh_7f3a2b9c1d",
+  "timestamp": "2025-08-14T06:00:00Z",
+  "data": {
+    "destination": "Athens, Greece",
+    "destination_id": "dest_athens_001",
+    "change_type": "heatwave_onset",
+    "previous_temperature": 33,
+    "current_temperature": 41,
+    "aqi": 138,
+    "seasonal_risk": 88,
+    "affected_profiles": ["prof_cardiac_001", "prof_respiratory_007"]
+  }
+}
+```
+
+## Retry Policy
+
+If your endpoint does not respond with HTTP `2xx` within 10 seconds, Alowish retries the delivery up to **3 times** using exponential backoff:
+
+| Attempt | Delay After Previous Failure |
+|--------:|------------------------------|
+| 1st retry | 30 seconds |
+| 2nd retry | 5 minutes |
+| 3rd retry | 30 minutes |
+
+After three failed retries, the delivery is marked as permanently failed and logged in your webhook delivery history in the dashboard. You can inspect failed deliveries and manually replay them from the **Settings → Webhooks** page.
+
+<Note>
+  Make your webhook handler idempotent. In rare cases (network timeouts where the response was sent but not received), Alowish may deliver the same event more than once. Use the combination of `webhook_id` + `timestamp` + `event` as a deduplication key.
+</Note>

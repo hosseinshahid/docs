@@ -1,0 +1,51 @@
+---
+title: 'Frequently Asked Questions About Alowish'
+sidebarTitle: 'FAQ'
+description: 'Answers to the most common questions about Alowish — from medical scope and data privacy to API keys, QLever, and cardiac risk measurement with LGE.'
+---
+
+Whether you are a first-time user exploring the Alowish app or a developer integrating the API into a travel platform, the questions below cover the most common points of curiosity and confusion. If you do not find what you are looking for here, reach out to the team at support@alowish.com.
+
+<Accordion title="Is Alowish a substitute for medical advice?">
+  No. Alowish is a health risk intelligence tool, not a clinical service. The risk scores, alerts, and recommendations it produces are informational — they help you understand how your health profile interacts with travel conditions so you can make more informed decisions. They are not a diagnosis, a medical opinion, or a substitute for the advice of a qualified physician. Always consult your doctor before making travel decisions based on a health condition, particularly for high-risk or complex medical histories.
+</Accordion>
+
+<Accordion title="What conditions does Alowish cover?">
+  Alowish models risk for a wide range of chronic and acute health conditions, with particular depth in cardiovascular disease (including post-infarction status, arrhythmias, and heart failure), respiratory conditions (asthma, COPD, sleep apnoea), metabolic conditions (Type 1 and Type 2 diabetes, obesity), autoimmune diseases, and neurological conditions. The engine also accounts for medication interactions with environmental factors — for example, the effect of diuretics during extreme heat, or beta-blockers at altitude. New condition models are added regularly; see the Alowish changelog for the latest additions.
+</Accordion>
+
+<Accordion title="How is my health data protected?">
+  All health data is encrypted at rest (AES-256) and in transit (TLS 1.3). Alowish does not sell or share your personal health information with third parties. Health profiles are stored pseudonymously — your profile is identified by a `profile_id`, not by your name or email address in the data layer. Alowish is compliant with GDPR (EU) and HIPAA (US) requirements. You can request full deletion of your health profile at any time from the Privacy section of your account settings, and deletion is permanent and irreversible.
+</Accordion>
+
+<Accordion title="Can I use Alowish without a health condition?">
+  Yes. Even if you have no diagnosed conditions, Alowish still provides useful travel health intelligence based on environmental conditions at your destination — heat index, air quality, altitude sickness risk, seasonal disease prevalence, and more. A profile with no conditions will return a lower baseline risk score but will still surface environmental alerts and location-specific recommendations relevant to any traveler. You can also use Alowish to track vaccinations and get destination-specific vaccine recommendations.
+</Accordion>
+
+<Accordion title="How often is environmental data updated?">
+  Environmental data — air quality, temperature, humidity, wind speed, and weather alerts — is refreshed every **15 minutes** from a combination of meteorological APIs, satellite feeds, and local sensor networks. Altitude data is static (sourced from digital elevation models) and does not change. Seasonal risk indicators are recalculated daily based on rolling historical data. For future travel dates, the risk score uses forecasted conditions where available, typically up to 7 days ahead.
+</Accordion>
+
+<Accordion title="Which countries and destinations are supported?">
+  Alowish supports destinations in **195 countries** with full environmental data coverage for major cities and popular travel corridors. Coverage in remote or rural areas may be limited to weather and altitude data without granular AQI readings — in those cases, the `confidence` field in the risk assessment response will be lower, indicating partial data. Coverage is expanding continuously; new regions are added as data partnerships are established. You can check coverage for a specific coordinate using the `GET /v1/destinations/{id}/conditions` endpoint.
+</Accordion>
+
+<Accordion title="What does the confidence percentage mean?">
+  The `confidence` value in a risk assessment response (a number between 0 and 1) tells you how complete the environmental data fusion was at the time of scoring. A confidence of `0.95` means nearly all environmental data feeds were available and the score is highly reliable. A confidence of `0.50` means roughly half the expected data sources were unavailable (for example, no local AQI sensor, missing humidity readings), and the score is partially estimated from historical averages and adjacent data points. We recommend surfacing a caveat to end users whenever confidence falls below `0.65`.
+</Accordion>
+
+<Accordion title="How do I get an API key?">
+  Log in to your Alowish account at [app.alowish.com/settings/api-keys](https://app.alowish.com/settings/api-keys), click **New API Key**, give it a label, select your tier, and click **Generate**. Copy the key immediately — it is shown only once. For full step-by-step instructions, see the [Authentication guide](/api/authentication).
+</Accordion>
+
+<Accordion title="Can I use the API on the free tier?">
+  Yes. The Free tier gives you **100 API requests per day** — enough for active development, personal projects, and proof-of-concept integrations. All endpoints are available on the Free tier. The only restrictions are the daily request cap and the absence of SLA guarantees. When you are ready to move to production, upgrade to the Pro tier (10,000 requests/day) or contact sales for Enterprise pricing (unlimited requests with SLA).
+</Accordion>
+
+<Accordion title="What is QLever?">
+  QLever is Alowish's proprietary query and reasoning layer that sits on top of the risk scoring engine. It translates natural-language queries — for example, "Is it safe for me to travel to Bangkok in July with my condition?" — into structured API calls, combines the results with contextual health knowledge, and returns a synthesized answer. QLever powers the conversational interface in the Alowish app. Developers can access QLever capabilities via the Alowish chat widget embed or, on Enterprise plans, via a dedicated QLever query endpoint.
+</Accordion>
+
+<Accordion title="Why does Alowish use LGE instead of LVEF for cardiac risk?">
+  Left Ventricular Ejection Fraction (LVEF) is the traditional metric for cardiac function, but it is an insensitive marker for subtle myocardial injury and fibrosis — two factors that significantly affect how the heart responds to physiological stressors like altitude, heat, and exertion. Late Gadolinium Enhancement (LGE) on cardiac MRI identifies areas of myocardial scar and fibrosis with much higher precision, enabling Alowish's cardiovascular sub-network (SN1) to distinguish, for example, between two patients with identical LVEF where one has extensive septal fibrosis and one does not. This distinction matters significantly when scoring risk for high-altitude or high-heat travel. Alowish accepts LGE status as an optional field in the health profile to improve cardiac risk accuracy where MRI data is available.
+</Accordion>

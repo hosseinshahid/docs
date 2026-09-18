@@ -1,0 +1,130 @@
+---
+title: 'How Alowish Calculates Your Health Risk Score'
+sidebarTitle: 'How It Works'
+description: 'Learn how Alowish fuses your health profile with real-time environmental data through an 11-subnetwork AI engine to produce your personalized risk score.'
+---
+
+Every Alowish risk score is the product of a multi-stage pipeline that begins with your personal health data, fuses it with live environmental intelligence, and runs it through a peer-reviewed AI model before returning a single, actionable number. Understanding each stage helps you trust — and get the most out of — the results you see on screen.
+
+## The End-to-End Scoring Pipeline
+
+<Steps>
+  <Step title="Profile Ingestion — What You Provide">
+    The pipeline starts with you. When you complete your health profile, Alowish securely ingests:
+
+    - **Medical conditions** — mapped to one or more of the 12 health verticals (Cardiac, Respiratory, Diabetes, Oncology, Neuro, Renal, Mental Health, Allergy, Pregnancy, Autoimmune, Elderly, Disability)
+    - **Current medications** — parsed for known drug-environment and drug-altitude interaction signatures
+    - **Allergy registry** — food, environmental, and pharmaceutical allergens
+    - **Vaccination history** — used to adjust destination infection-risk baselines
+    - **Demographic data** — age, biological sex, and mobility status where relevant
+
+    All data is stored and processed on **Swiss sovereign infrastructure** via a QLever knowledge graph (SPARQL/RDF), delivering query responses in under 80 milliseconds with no data residency outside Switzerland.
+  </Step>
+
+  <Step title="Environmental Data Fusion — Real-Time RADAR">
+    Before scoring begins, Alowish's **real-time RADAR layer** pulls live and forecast data for your destination and travel dates from multiple authoritative sources:
+
+    <CardGroup cols={2}>
+      <Card title="Air Quality Index (AQI)" icon="wind">
+        Real-time particulate matter (PM2.5, PM10), ozone, and NO₂ readings from ground stations and satellite feeds. Critical for Respiratory, Cardiac, and Allergy verticals.
+      </Card>
+      <Card title="Temperature & Humidity" icon="temperature-half">
+        Hourly temperature forecasts and humidity levels matched against heat-stress thresholds for Cardiac, Diabetes, Renal, Elderly, and Pregnancy profiles.
+      </Card>
+      <Card title="Altitude" icon="mountain">
+        Destination elevation and, where relevant, en-route altitude peaks. Altitude affects oxygen availability, medication efficacy, and cardiac workload.
+      </Card>
+      <Card title="Seasonal Disease Calendar" icon="calendar">
+        Region- and month-specific prevalence data for infectious diseases, pollen seasons, and vector-borne disease windows (dengue, malaria, Zika, and others).
+      </Card>
+      <Card title="Drug-Environment Alerts" icon="pills">
+        Cross-referenced flags raised when a medication in your profile is known to interact adversely with local temperature, humidity, UV index, or altitude conditions.
+      </Card>
+      <Card title="Geospatial Infrastructure" icon="hospital">
+        Hospital density, trauma-center proximity, pharmacy coverage, and emergency-response time estimates for your specific itinerary coordinates.
+      </Card>
+    </CardGroup>
+
+    All RADAR data refreshes continuously, so a score generated on Monday reflects conditions that are different from those on Friday — Alowish prompts you to re-score if significant environmental changes occur before your departure.
+  </Step>
+
+  <Step title="Risk Engine Computation — EBF-NN v3">
+    The fused profile and environmental dataset feeds into the **Evidential Bayesian-Fuzzy Neural Network, version 3 (EBF-NN v3)** — a proprietary model architecture combining Bayesian probability, fuzzy-logic membership functions, and deep neural subnetworks to handle the uncertainty and non-linearity inherent in health risk prediction.
+
+    The engine runs **11 specialist subnetworks (SN1–SN11)** in parallel, each responsible for a distinct risk domain:
+
+    <Tabs>
+      <Tab title="SN1 — Cardiac CMR">
+        Subnetwork 1 is Alowish's most evidence-dense model. It is anchored to a **2024 JAMA study** using cardiac magnetic resonance (CMR) late gadolinium enhancement (LGE) data from **29,687 patients**, which demonstrated a hazard ratio of **2.69** for major adverse cardiac events in travelers with LGE-positive profiles. SN1 integrates destination AQI, heat index, altitude, and exertion estimates to personalize this population-level finding to your itinerary.
+      </Tab>
+      <Tab title="SN2 — Disease Interaction">
+        Subnetwork 2 maps your active diagnoses and immunosuppression status against destination-specific disease prevalence. It accounts for multi-condition interactions — for example, the compounding risk when a cardiac condition co-exists with diabetes — by weighting condition pairs rather than treating each diagnosis in isolation.
+      </Tab>
+      <Tab title="SN3 — Travel Stressors">
+        Subnetwork 3 models physiological stressors intrinsic to the journey itself: flight duration, time-zone shift (jet lag severity), cabin pressure, physical transit demands (walking, climbing), and trip duration. Long-haul flights or high-altitude rail journeys can materially shift your score independent of the destination environment.
+      </Tab>
+      <Tab title="SN4 — Drug-Environment">
+        Subnetwork 4 evaluates every medication in your profile against the destination's environmental parameters. Examples include beta-blockers whose effectiveness decreases at altitude, insulin degradation risk in high-heat climates, and photosensitizing drugs combined with high UV-index destinations. Flags surface directly in your score breakdown.
+      </Tab>
+      <Tab title="SN5 — Environment">
+        Subnetwork 5 processes the raw RADAR environmental signals — AQI, temperature, humidity, altitude, water quality — and converts them into dimensionless risk features calibrated to each of the 12 health verticals. It acts as the environmental feature extractor feeding into the condition-specific subnetworks.
+      </Tab>
+      <Tab title="SN6 — Seasonal Risk">
+        Subnetwork 6 overlays temporal risk patterns: disease-season peaks, monsoon and wildfire smoke seasons, extreme heat windows, and regional allergy calendars. Traveling to Southeast Asia in peak dengue season carries a meaningfully different score from the same trip in January — SN6 captures that difference precisely.
+      </Tab>
+    </Tabs>
+
+    The remaining subnetworks (SN7–SN11) address Mental Health stress indices, Pregnancy-specific risk factors, Autoimmune and immunosuppression interaction modeling, Elderly physiological resilience, and Disability infrastructure accessibility respectively. Together, the 11 subnetworks evaluate **343 parameters** before producing a unified output vector.
+  </Step>
+
+  <Step title="Score Output — 0 to 100">
+    The EBF-NN v3 aggregates subnetwork outputs into a single **0–100 risk percentage**, where higher scores indicate greater health risk for your specific profile at your chosen destination and dates.
+
+    | Score | Color Band | Risk Level | Recommended Action |
+    |-------|-----------|------------|-------------------|
+    | 0–24 | 🟢 Green | **Low** | Travel as planned with standard precautions |
+    | 25–49 | 🟡 Yellow | **Moderate** | Review flagged risk factors; consider precautions |
+    | 50–74 | 🟠 Orange | **High** | Consult your physician; explore safer alternatives |
+    | 75–100 | 🔴 Red | **Very High** | Strong caution advised; telemedicine consultation recommended |
+
+    Every score is accompanied by a **Confidence %** — a measure of data completeness. A score with 90 % confidence means the engine had full real-time RADAR coverage and a complete health profile. A score at 65 % confidence may be based on forecast rather than live data or a partially filled profile.
+
+    <Tip>
+      You can increase your confidence percentage by completing all sections of your health profile and by searching destinations where live RADAR data is dense (major cities and popular travel hubs typically score higher confidence than remote regions). Check back closer to your travel date for a refreshed score with higher confidence.
+    </Tip>
+  </Step>
+
+  <Step title="Life Map Generation — Navigating Your Destination Safely">
+    Once your risk score is computed, Alowish automatically generates a **personalized Life Map** — an interactive GIS layer built on top of your destination geography. The map is not static: it inherits the color-coded risk intelligence from the EBF-NN v3 output and overlays it spatially across your entire itinerary.
+
+    The Life Map surfaces:
+
+    - **Color-coded route overlays** — streets and districts shaded by their cumulative risk contribution (air quality corridors, high-heat zones, poor-infrastructure areas)
+    - **Hospital and specialist clinic pins** — filtered to facilities relevant to your health verticals, with specialist availability and estimated response time
+    - **Pharmacy markers** — including stock alerts for medications common to your conditions
+    - **Safe-dining indicators** — restaurants vetted against your allergen profile and local food-safety ratings
+
+    Use the **Route Comparison** tool to evaluate multiple travel corridors side by side, or tap any map pin to pull up facility details, operating hours, and emergency contact numbers.
+  </Step>
+</Steps>
+
+## Architecture at a Glance
+
+<CardGroup cols={2}>
+  <Card title="343 Parameters" icon="sliders">
+    The EBF-NN v3 evaluates 343 distinct parameters spanning clinical, environmental, pharmacological, geospatial, and temporal dimensions.
+  </Card>
+  <Card title="11 Specialist Subnetworks" icon="network-wired">
+    Each of the 11 subnetworks (SN1–SN11) is independently trained on domain-specific data before being ensemble-combined in the final scoring layer.
+  </Card>
+  <Card title="JAMA 2024 Evidence Base" icon="file-medical">
+    The cardiac subnetwork (SN1) is directly grounded in a JAMA 2024 LGE-CMR study of 29,687 patients, providing one of the strongest evidence anchors in travel cardiology.
+  </Card>
+  <Card title="<80 ms Query Latency" icon="bolt">
+    Swiss sovereign knowledge-graph infrastructure (QLever, SPARQL/RDF) returns data queries in under 80 milliseconds, enabling near-instant score generation at scale.
+  </Card>
+</CardGroup>
+
+<Note>
+  The EBF-NN v3 model and its subnetworks are continuously updated as new epidemiological evidence, RADAR data sources, and clinical literature become available. Your saved risk scores include a version stamp so you can always see which model version generated a given result.
+</Note>

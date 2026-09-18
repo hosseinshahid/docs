@@ -1,0 +1,346 @@
+---
+title: 'Destination Conditions and Route Risk Endpoints'
+sidebarTitle: 'Destinations'
+description: 'Retrieve live environmental conditions for any destination, compare health risk across alternative routes, and locate nearby health services by type.'
+---
+
+Alowish exposes three closely related endpoints for spatial health intelligence: one to fetch the current environmental snapshot at a named destination, one to compare risk across alternative routes between two points, and one to discover health services near any coordinate. Together they give you everything you need to present a traveler with not only a risk score, but also a full picture of the environment they are traveling through and the medical resources available along the way.
+
+---
+
+## GET /v1/destinations/{id}/conditions
+
+Retrieve the current environmental conditions for a specific destination by its Alowish destination ID. The response includes weather data, air quality, altitude, and a seasonal risk indicator that captures how environmental conditions at this location compare to the same time in past years.
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  The Alowish destination identifier. You can find destination IDs in the responses from the risk assessment endpoint or by searching the destination index via the Alowish dashboard.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="location" type="object">
+  Geographic metadata for the destination.
+
+  <Expandable title="location fields">
+    <ResponseField name="location.name" type="string">Human-readable place name.</ResponseField>
+    <ResponseField name="location.lat" type="number">Latitude in decimal degrees (WGS 84).</ResponseField>
+    <ResponseField name="location.lng" type="number">Longitude in decimal degrees (WGS 84).</ResponseField>
+    <ResponseField name="location.altitude" type="number">Altitude in metres above sea level.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="weather" type="object">
+  Current meteorological conditions at the destination.
+
+  <Expandable title="weather fields">
+    <ResponseField name="weather.temperature" type="number">Ambient temperature in degrees Celsius.</ResponseField>
+    <ResponseField name="weather.humidity" type="number">Relative humidity as a percentage (0–100).</ResponseField>
+    <ResponseField name="weather.wind_speed" type="number">Wind speed in kilometres per hour.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="air_quality" type="object">
+  Current air quality data at the destination.
+
+  <Expandable title="air_quality fields">
+    <ResponseField name="air_quality.aqi" type="number">Air Quality Index (0–500, US EPA scale).</ResponseField>
+    <ResponseField name="air_quality.category" type="string">Plain-language AQI category, for example `"Good"`, `"Moderate"`, or `"Unhealthy"`.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="seasonal_risk" type="number">
+  A 0–100 indicator of how this destination's current conditions compare to its historical seasonal baseline. A value above 70 means conditions are significantly worse than average for this time of year.
+</ResponseField>
+
+---
+
+## GET /v1/routes
+
+Compare travel health risk across all viable route types between an origin and destination, broken down by waypoints. This is the endpoint to use when you want to present a traveler with a risk-ranked selection of routes — for example, showing that a scenic mountain route carries higher altitude risk than a motorway alternative.
+
+### Query Parameters
+
+<ParamField query="origin_lat" type="number" required>
+  Latitude of the journey origin in decimal degrees.
+</ParamField>
+
+<ParamField query="origin_lng" type="number" required>
+  Longitude of the journey origin in decimal degrees.
+</ParamField>
+
+<ParamField query="dest_lat" type="number" required>
+  Latitude of the destination in decimal degrees.
+</ParamField>
+
+<ParamField query="dest_lng" type="number" required>
+  Longitude of the destination in decimal degrees.
+</ParamField>
+
+<ParamField query="profile_id" type="string" required>
+  The traveler's health profile ID. Without a profile, the API returns aggregate risk scores rather than personalized ones.
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="routes" type="array">
+  An array of route objects, one per viable route type.
+
+  <Expandable title="Route object fields">
+    <ResponseField name="routes[].type" type="string">
+      The route type label, for example `"Train"`, `"Motorway"`, or `"Scenic"`.
+    </ResponseField>
+    <ResponseField name="routes[].risk_score" type="number">
+      The overall personalized risk score (0–100) for the entire route.
+    </ResponseField>
+    <ResponseField name="routes[].waypoints" type="array">
+      An ordered list of key waypoints along the route.
+
+      <Expandable title="Waypoint object fields">
+        <ResponseField name="waypoints[].name" type="string">Human-readable waypoint name.</ResponseField>
+        <ResponseField name="waypoints[].lat" type="number">Latitude in decimal degrees.</ResponseField>
+        <ResponseField name="waypoints[].lng" type="number">Longitude in decimal degrees.</ResponseField>
+        <ResponseField name="waypoints[].altitude" type="number">Altitude in metres above sea level.</ResponseField>
+        <ResponseField name="waypoints[].risk_score" type="number">Individual risk score at this waypoint (0–100).</ResponseField>
+        <ResponseField name="waypoints[].nearest_hospital" type="string">Name and approximate distance of the closest hospital to this waypoint.</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### Example: Munich → Venice Route Comparison
+
+The following example compares three route options for a journey from Munich, Germany to Venice, Italy.
+
+```json
+{
+  "routes": [
+    {
+      "type": "Train",
+      "risk_score": 28,
+      "waypoints": [
+        {
+          "name": "Munich Hauptbahnhof",
+          "lat": 48.1401,
+          "lng": 11.5600,
+          "altitude": 519,
+          "risk_score": 18,
+          "nearest_hospital": "Klinikum München-Neuhausen (0.8 km)"
+        },
+        {
+          "name": "Brenner Pass",
+          "lat": 47.0015,
+          "lng": 11.5077,
+          "altitude": 1370,
+          "risk_score": 42,
+          "nearest_hospital": "Krankenhaus Sterzing (12.4 km)"
+        },
+        {
+          "name": "Verona Porta Nuova",
+          "lat": 45.4280,
+          "lng": 10.9820,
+          "altitude": 68,
+          "risk_score": 22,
+          "nearest_hospital": "Ospedale Civile Maggiore (2.1 km)"
+        },
+        {
+          "name": "Venezia Santa Lucia",
+          "lat": 45.4414,
+          "lng": 12.3202,
+          "altitude": 2,
+          "risk_score": 29,
+          "nearest_hospital": "Ospedale Civile SS. Giovanni e Paolo (1.3 km)"
+        }
+      ]
+    },
+    {
+      "type": "Motorway",
+      "risk_score": 33,
+      "waypoints": [
+        {
+          "name": "Munich",
+          "lat": 48.1351,
+          "lng": 11.5820,
+          "altitude": 519,
+          "risk_score": 18,
+          "nearest_hospital": "Klinikum München-Neuhausen (0.8 km)"
+        },
+        {
+          "name": "Innsbruck",
+          "lat": 47.2692,
+          "lng": 11.4041,
+          "altitude": 574,
+          "risk_score": 26,
+          "nearest_hospital": "Universitätsklinik Innsbruck (1.9 km)"
+        },
+        {
+          "name": "Brenner Pass",
+          "lat": 47.0015,
+          "lng": 11.5077,
+          "altitude": 1370,
+          "risk_score": 45,
+          "nearest_hospital": "Krankenhaus Sterzing (12.4 km)"
+        },
+        {
+          "name": "Venice Mestre",
+          "lat": 45.4906,
+          "lng": 12.2401,
+          "altitude": 4,
+          "risk_score": 29,
+          "nearest_hospital": "Ospedale dell'Angelo (1.1 km)"
+        }
+      ]
+    },
+    {
+      "type": "Scenic",
+      "risk_score": 61,
+      "waypoints": [
+        {
+          "name": "Munich",
+          "lat": 48.1351,
+          "lng": 11.5820,
+          "altitude": 519,
+          "risk_score": 18,
+          "nearest_hospital": "Klinikum München-Neuhausen (0.8 km)"
+        },
+        {
+          "name": "Zugspitze Foothills",
+          "lat": 47.4217,
+          "lng": 10.9853,
+          "altitude": 2100,
+          "risk_score": 78,
+          "nearest_hospital": "Krankenhaus Garmisch-Partenkirchen (18.3 km)"
+        },
+        {
+          "name": "Stelvio Pass",
+          "lat": 46.5285,
+          "lng": 10.4534,
+          "altitude": 2757,
+          "risk_score": 83,
+          "nearest_hospital": "Ospedale di Sondalo (31.2 km)"
+        },
+        {
+          "name": "Venice",
+          "lat": 45.4414,
+          "lng": 12.3202,
+          "altitude": 2,
+          "risk_score": 29,
+          "nearest_hospital": "Ospedale Civile SS. Giovanni e Paolo (1.3 km)"
+        }
+      ]
+    }
+  ]
+}
+```
+
+<Note>
+  The Scenic route through the Zugspitze foothills and Stelvio Pass scores significantly higher due to extreme altitude exposure (up to 2,757 m). For travelers with cardiovascular or respiratory conditions, use the `risk_score` values to automatically surface the lowest-risk route as the default recommendation.
+</Note>
+
+---
+
+## GET /v1/services/nearby {#nearby-services}
+
+Locate health services and traveler-relevant amenities near any coordinate. Use this endpoint to help travelers identify hospitals, pharmacies, restaurants (relevant for dietary restrictions), and telemedicine providers before or during their journey.
+
+### Query Parameters
+
+<ParamField query="lat" type="number" required>
+  Latitude of the search centre in decimal degrees.
+</ParamField>
+
+<ParamField query="lng" type="number" required>
+  Longitude of the search centre in decimal degrees.
+</ParamField>
+
+<ParamField query="radius_km" type="number">
+  Search radius in kilometres. Defaults to `10`. Maximum value is `100`.
+</ParamField>
+
+<ParamField query="types" type="string">
+  A comma-separated list of service types to include in the results. Omit to return all types.
+
+  Supported values: `hospital` · `pharmacy` · `restaurant` · `telemedicine`
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="services" type="array">
+  An array of service objects within the specified radius, sorted by distance ascending.
+
+  <Expandable title="Service object fields">
+    <ResponseField name="services[].type" type="string">Service category: `"hospital"`, `"pharmacy"`, `"restaurant"`, or `"telemedicine"`.</ResponseField>
+    <ResponseField name="services[].name" type="string">Name of the service or facility.</ResponseField>
+    <ResponseField name="services[].lat" type="number">Latitude of the facility.</ResponseField>
+    <ResponseField name="services[].lng" type="number">Longitude of the facility.</ResponseField>
+    <ResponseField name="services[].distance_km" type="number">Distance from the search centre in kilometres.</ResponseField>
+    <ResponseField name="services[].specialties" type="string[]">List of medical specialties or service sub-types offered (for example, `["cardiology", "emergency"]`).</ResponseField>
+    <ResponseField name="services[].rating" type="number">Average user rating on a 1.0–5.0 scale.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+---
+
+## Code Examples
+
+<CodeGroup>
+
+```bash Get Destination Conditions
+curl -X GET https://api.alowish.com/v1/destinations/dest_venice_001/conditions \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```bash Compare Routes
+curl -G https://api.alowish.com/v1/routes \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  --data-urlencode "origin_lat=48.1351" \
+  --data-urlencode "origin_lng=11.5820" \
+  --data-urlencode "dest_lat=45.4414" \
+  --data-urlencode "dest_lng=12.3202" \
+  --data-urlencode "profile_id=prof_abc123"
+```
+
+```bash Find Nearby Services
+curl -G https://api.alowish.com/v1/services/nearby \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  --data-urlencode "lat=45.4414" \
+  --data-urlencode "lng=12.3202" \
+  --data-urlencode "radius_km=5" \
+  --data-urlencode "types=hospital,pharmacy"
+```
+
+```javascript JavaScript (fetch)
+// Get destination conditions
+const conditions = await fetch(
+  'https://api.alowish.com/v1/destinations/dest_venice_001/conditions',
+  { headers: { Authorization: `Bearer ${process.env.ALOWISH_API_KEY}` } }
+).then(r => r.json());
+
+// Compare routes
+const params = new URLSearchParams({
+  origin_lat: '48.1351',
+  origin_lng: '11.5820',
+  dest_lat: '45.4414',
+  dest_lng: '12.3202',
+  profile_id: 'prof_abc123',
+});
+const routes = await fetch(
+  `https://api.alowish.com/v1/routes?${params}`,
+  { headers: { Authorization: `Bearer ${process.env.ALOWISH_API_KEY}` } }
+).then(r => r.json());
+
+// Nearby services
+const servicesParams = new URLSearchParams({
+  lat: '45.4414',
+  lng: '12.3202',
+  radius_km: '5',
+  types: 'hospital,pharmacy',
+});
+const services = await fetch(
+  `https://api.alowish.com/v1/services/nearby?${servicesParams}`,
+  { headers: { Authorization: `Bearer ${process.env.ALOWISH_API_KEY}` } }
+).then(r => r.json());
+```
+
+</CodeGroup>

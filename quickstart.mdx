@@ -1,47 +1,94 @@
 ---
-title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+title: 'Get Started with Alowish in 5 Minutes'
+sidebarTitle: 'Quick Start'
+description: 'Create your account, build your health profile, search a destination, and receive your first personalized travel health risk score in minutes.'
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
-
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
-
-## Prerequisites
-
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+Getting your first personalized travel health risk score takes less than five minutes. Follow the steps below to set up your account, enter your health profile, and explore the smart Life Map for your upcoming trip.
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
-
-    ```bash
-    npm install your-package
-    ```
+  <Step title="Create Your Account">
+    Go to [app.alowish.com](https://app.alowish.com) and click **Sign Up**. Enter your email address and choose a password, or sign in with Google or Apple. Alowish stores all personal and health data on Swiss sovereign infrastructure — your information never leaves a privacy-compliant environment.
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
 
-    ```bash
-    your-cli init
-    ```
+  <Step title="Complete Your Health Profile">
+    Your health profile is the foundation of every risk score Alowish generates. Fill in each section as accurately as you can:
+
+    <Accordion title="Conditions">
+      Select all chronic or acute conditions that apply to you from the 12 health verticals (Cardiac, Respiratory, Diabetes, Oncology, Neuro, Renal, Mental Health, Allergy, Pregnancy, Autoimmune, Elderly, Disability). You can add more than one condition.
+    </Accordion>
+
+    <Accordion title="Medications">
+      List your current medications, including dosages. Alowish uses this information to flag drug-environment interactions at your destination — for example, medications that become less effective at altitude or degrade in high heat.
+    </Accordion>
+
+    <Accordion title="Allergies">
+      Add food, environmental, and drug allergies. The platform cross-references these against local allergen calendars and restaurant labeling practices at your destination.
+    </Accordion>
+
+    <Accordion title="Vaccination History">
+      Record your vaccination status. This allows Alowish to calculate your residual infection risk for destination-specific diseases such as yellow fever, typhoid, or dengue.
+    </Accordion>
+
+    <Tip>
+      The more complete your profile, the higher the confidence percentage on your risk score. Even partially completed profiles generate useful scores — you can return and update at any time.
+    </Tip>
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
 
-    ```bash
-    your-cli start
+  <Step title="Search Your Destination">
+    Use the search bar on the dashboard to enter your destination city or region and your planned travel dates. Alowish accepts city names, airports (IATA codes), or GPS coordinates.
+
     ```
+    Example searches:
+    - "Kathmandu, Nepal · 15 Mar – 30 Mar"
+    - "JFK → NBO · 2025-04-10"
+    - "37.7749° N, 122.4194° W"
+    ```
+
+    Hit **Analyze Risk** to trigger the real-time RADAR data pull and AI scoring computation.
+  </Step>
+
+  <Step title="Read Your Risk Score">
+    Alowish returns your score within seconds. The result displays as a percentage from 0 to 100 together with a color-coded risk band:
+
+    | Score Range | Color  | Risk Level |
+    |-------------|--------|------------|
+    | 0 – 24      | Green  | Low        |
+    | 25 – 49     | Yellow | Moderate   |
+    | 50 – 74     | Orange | High       |
+    | 75 – 100    | Red    | Very High  |
+
+    Below the main score you'll find a **Confidence %** — a measure of how much real-time data was available for your destination and dates — plus a breakdown of which health verticals contributed most to your score. Review any flagged risk factors (shown in orange or red) for specific guidance.
+  </Step>
+
+  <Step title="Explore the Life Map">
+    Click **Open Life Map** beneath your score to launch the interactive GIS map of your destination. The map layers include:
+
+    - **Color-coded route overlays** — see which roads, neighborhoods, and transit corridors carry elevated health risk so you can plan safer itineraries.
+    - **Hospital and clinic pins** — locate the nearest facilities that match your medical needs, with estimated travel times and specialist availability.
+    - **Pharmacy markers** — find pharmacies stocking medications relevant to your profile.
+    - **Safe dining indicators** — vetted restaurants flagged as low-risk for your specific allergies and dietary requirements.
+
+    Use the **Route Comparison** tool on the left panel to compare the health-risk profiles of two or more routes side by side.
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## What You'll See After Analysis
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+Once your analysis is complete, the Alowish dashboard presents three main panels:
+
+<CardGroup cols={3}>
+  <Card title="Risk Score Card" icon="chart-bar">
+    Your headline 0–100 score, color band, confidence percentage, and a breakdown by health vertical. Tap any vertical to drill into the specific environmental and seasonal factors driving that sub-score.
+  </Card>
+  <Card title="Life Map Pins" icon="map-pin">
+    Color-coded pins on your destination map marking hospitals, pharmacies, safe restaurants, and high-risk micro-zones. Filter by category or zoom into specific neighborhoods.
+  </Card>
+  <Card title="Route Comparison Cards" icon="route">
+    Side-by-side cards comparing the cumulative health-risk score of different travel routes or itinerary options, helping you choose the lowest-risk path between two points.
+  </Card>
+</CardGroup>
+
+<Note>
+  If your score is High or Very High, Alowish automatically surfaces **lower-risk alternative destinations and travel windows** based on your health profile. Look for the *Safer Alternatives* panel on the right side of your dashboard.
+</Note>

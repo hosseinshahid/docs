@@ -1,0 +1,128 @@
+---
+title: 'Authenticate with the Alowish API'
+sidebarTitle: 'Authentication'
+description: 'Generate and secure your Alowish API key, attach the Bearer token to every request, and learn how to safely rotate or revoke credentials.'
+---
+
+Every request to the Alowish API must be authenticated with a personal API key that you generate from your account dashboard. Authentication uses the industry-standard Bearer token scheme — you include your key in the `Authorization` header on every HTTP request, and the API validates it before processing anything.
+
+## Generate Your API Key
+
+<Steps>
+  <Step title="Open API Key Settings">
+    Log in to your Alowish account at [app.alowish.com](https://app.alowish.com) and navigate to **Settings → API Keys** (direct link: [app.alowish.com/settings/api-keys](https://app.alowish.com/settings/api-keys)).
+  </Step>
+  <Step title="Create a New Key">
+    Click **New API Key**. Give the key a descriptive label (for example, `production-backend` or `staging-tests`) and select the tier that matches your subscription — Free, Pro, or Enterprise. Click **Generate**.
+  </Step>
+  <Step title="Copy and Store the Key Securely">
+    The full API key is displayed **only once** immediately after creation. Copy it now and store it in a secrets manager, environment variable, or encrypted vault. If you close the page without copying, you must revoke the key and generate a new one.
+
+    <Warning>
+      Never commit your API key to source control or paste it into client-side JavaScript, mobile app bundles, or any publicly accessible file. Treat it with the same care as a database password.
+    </Warning>
+  </Step>
+</Steps>
+
+## Add the Key to Your Requests
+
+Include your API key as a Bearer token in the `Authorization` header of every request:
+
+```http
+Authorization: Bearer YOUR_API_KEY
+```
+
+The following examples show how to attach the header in three common environments.
+
+<CodeGroup>
+
+```bash curl
+curl -X GET https://api.alowish.com/v1/profile/prof_abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json"
+```
+
+```javascript JavaScript (fetch)
+const profileId = 'prof_abc123';
+
+const response = await fetch(
+  `https://api.alowish.com/v1/profile/${profileId}`,
+  {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${process.env.ALOWISH_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+  }
+);
+
+const profile = await response.json();
+```
+
+```python Python (requests)
+import os
+import requests
+
+API_KEY = os.environ["ALOWISH_API_KEY"]
+
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json",
+}
+
+response = requests.get(
+    "https://api.alowish.com/v1/profile/prof_abc123",
+    headers=headers,
+)
+profile = response.json()
+```
+
+</CodeGroup>
+
+<Tip>
+  Store your API key in an environment variable (for example, `ALOWISH_API_KEY`) and read it at runtime. This keeps the key out of your codebase and makes rotation straightforward — update the environment variable without changing any code.
+</Tip>
+
+## Authentication Errors
+
+If authentication fails, the API returns an `HTTP 401 Unauthorized` response with a structured error body:
+
+```json
+{
+  "error": {
+    "code": "invalid_api_key",
+    "message": "The provided API key is missing, malformed, or has been revoked.",
+    "details": {}
+  }
+}
+```
+
+### Common Causes of 401 Errors
+
+| Cause | Fix |
+|-------|-----|
+| `Authorization` header is missing entirely | Add the header to every request |
+| Prefix is wrong (e.g. `Token` instead of `Bearer`) | Use exactly `Bearer YOUR_API_KEY` |
+| Key was copied with leading or trailing whitespace | Trim whitespace before storing |
+| Key has been revoked | Generate a new key in the dashboard |
+| Key belongs to a different environment (staging vs production) | Verify which key matches the base URL you are calling |
+
+## Rotate or Revoke a Key
+
+If a key is compromised, expired, or no longer needed, revoke it immediately from the dashboard:
+
+<Steps>
+  <Step title="Open API Key Settings">
+    Go to [app.alowish.com/settings/api-keys](https://app.alowish.com/settings/api-keys).
+  </Step>
+  <Step title="Revoke the Old Key">
+    Find the key you want to retire, click the **⋯** menu, and select **Revoke**. The key is invalidated immediately — any in-flight requests using it will receive a `401` response.
+  </Step>
+  <Step title="Generate a Replacement">
+    Click **New API Key**, create a key with the same label and tier, copy it, and update your secrets manager or environment variable.
+  </Step>
+</Steps>
+
+<Note>
+  There is no grace period after revoking a key. If your application is live, generate and deploy the replacement key **before** revoking the old one to avoid a gap in service.
+</Note>

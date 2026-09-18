@@ -1,0 +1,67 @@
+---
+title: 'Understanding Your Personalized Health Risk Score'
+sidebarTitle: 'Risk Score'
+description: 'Learn how Alowish calculates your 0–100% composite risk score, what the four color-coded bands mean, and how routes and medications adjust it in real time.'
+---
+
+Your Alowish health risk score is a single, actionable number that captures the probability of an adverse health event occurring during a specific journey, given your unique medical profile, the destination environment, and the travel route you choose. It draws on 343 parameters across 11 neural subnetworks — updated continuously as conditions change — so you always have the clearest possible picture of what lies ahead.
+
+## What the Score Measures
+
+The score is expressed as a percentage from **0 to 100 %**, where higher values indicate a greater probability of experiencing a clinically significant health event (hospitalization, acute exacerbation, or medical emergency) during your trip. It is a **composite index**: every factor that matters to your health — air quality, altitude, temperature extremes, endemic disease risk, seasonal allergen load, and your active medications — is weighted together by Alowish's Bayesian-Fuzzy Neural Network (EBF-NN v3) to produce one number.
+
+<Note>
+  Your risk score is an AI-generated probability estimate designed to help you make informed travel decisions. It is **not a medical diagnosis** and does not replace advice from your physician or a qualified travel medicine specialist.
+</Note>
+
+## The Four Risk Bands
+
+Each score falls into one of four color-coded bands. The color you see on your dashboard, Life Map, and route cards always corresponds to the band below.
+
+<Accordion title="Low Risk — Green (< 30 %)">
+  Your current profile and destination combination presents a low probability of adverse health events. Normal travel precautions apply. Review any active medication alerts in the RADAR panel and carry your usual supplies.
+</Accordion>
+
+<Accordion title="Moderate Risk — Orange (30 – 64 %)">
+  One or more environmental or profile factors elevate your risk above baseline. Alowish recommends reviewing the flagged parameters in your score breakdown, considering the suggested lower-risk alternatives, and consulting Dr. Alowish for personalized guidance before departure.
+</Accordion>
+
+<Accordion title="High Risk — Red (65 – 79 %)">
+  Significant risk factors are active for this journey. You should carefully review all flagged alerts, explore alternative times or routes suggested by Alowish, and speak with a travel medicine specialist via the in-app Telemedicine service before confirming your plans.
+</Accordion>
+
+<Accordion title="Very High Risk — Dark Red (≥ 80 %)">
+  Multiple serious risk factors converge for this itinerary. Alowish strongly recommends consulting both your treating physician and an Alowish telemedicine specialist before proceeding. Consider the alternative destinations or travel windows highlighted on your Life Map.
+</Accordion>
+
+## Confidence Percentage
+
+Alongside your risk score you will always see a **confidence percentage** (for example, *84 % confident*). This figure reflects how complete your health profile is, how much real-time environmental data is available for your destination, and the statistical certainty of the underlying model outputs. A higher confidence percentage means the score is based on richer, more current data. If your confidence reads below 70 %, Alowish will prompt you to complete missing profile fields or flag that live data for that destination is limited.
+
+## How Route Choice Affects Your Score
+
+The route you travel matters as much as where you are going. Alowish scores each available route independently and displays the results in comparable route cards on your Life Map.
+
+| Route Type | Typical Score Impact | Why |
+|---|---|---|
+| **Train** | Lowest score (best) | Climate-controlled, no altitude variation, minimal physical exertion, predictable stops near medical facilities |
+| **Motorway** | Moderate score | Higher speed limits increase accident-exposure weighting; urban air quality at service stops |
+| **Scenic** | Highest score | Remote stretches, altitude gain, limited emergency access, greater physical exertion if driving |
+
+<Tip>
+  Switch between route cards on your Life Map to instantly compare scores. Alowish highlights the recommended route with a green badge when one option scores significantly lower than the others.
+</Tip>
+
+## Medication Alerts and Dynamic Score Adjustment
+
+Your live RADAR panel monitors how your current medications interact with destination-specific environmental conditions and adjusts your score in real time. Common examples include:
+
+- **Warfarin + heat exposure** — elevated ambient temperatures can destabilize INR control, increasing both bleeding and clotting risk.
+- **Beta-blockers + altitude** — these medications blunt the normal heart-rate response to hypoxia, masking early altitude sickness symptoms.
+- **Immunosuppressants + endemic infection zones** — your score rises proportionally with the regional disease burden.
+
+When a medication alert fires, a yellow pill icon appears next to your score. Tap it to read the specific interaction, its severity, and Alowish's recommended precaution.
+
+## Score Breakdown Panel
+
+Tap **Score Details** beneath your main risk number to open the full breakdown. Each of your active health verticals contributes a sub-score, and each environmental parameter is listed with its weighted contribution. This transparency lets you understand exactly which factors are driving your overall number and what you can change to lower it.

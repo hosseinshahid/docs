@@ -1,0 +1,107 @@
+---
+title: 'The Alowish Life Map: Your Real-Time Health Navigation'
+sidebarTitle: 'Life Map'
+description: 'Explore the Alowish Life Map: a GIS smart map with color-coded risk routes, hospital and pharmacy pins, route comparison, and one-tap on-route services.'
+---
+
+The Life Map is Alowish's interactive geographic intelligence layer — a GIS-powered smart map that translates your risk score from an abstract number into a visual journey you can read at a glance. Every road segment, every waypoint, and every stop is colored according to the health risk it represents for *you specifically*, based on your active health verticals, your current medications, and live environmental data for that precise location and time. The Life Map updates continuously as you travel, so the picture you see always reflects current conditions rather than a static pre-departure snapshot.
+
+## Color-Coded Route Lines
+
+Route lines on the Life Map are segmented and colored in real time to show how your health risk changes along the way — not just at the destination.
+
+| Color | Risk Band | What It Means |
+|---|---|---|
+| 🟢 **Green** | Low (< 30 %) | This segment presents low environmental stress for your profile. Proceed with normal precautions. |
+| 🟠 **Orange** | Moderate (30 – 64 %) | Elevated risk on this segment — review the flagged parameters before driving or passing through. |
+| 🔴 **Red** | High / Very High (≥ 65 %) | Significant health risk on this segment. Consider an alternative route or timing, or consult a specialist. |
+
+Segments turn red for reasons specific to your profile: a mountain pass may be green for a healthy traveler but red for someone on beta-blockers, because altitude blunts the cardiac response that altitude-sickness early-warning systems depend on.
+
+## Map Pins
+
+The Life Map overlays a rich layer of health-relevant locations as map pins so you always know what support is available near you.
+
+<CardGroup cols={2}>
+  <Card title="Hospital Pins" icon="hospital">
+    Marked with a **+** symbol. Tap any hospital pin to open a popup showing the facility name, distance from your current position, available specialties, and emergency contact number. Pins are filtered to show only facilities relevant to your active health verticals — a cardiac patient sees cardiology-capable centers highlighted first.
+  </Card>
+
+  <Card title="Pharmacy Pins" icon="prescription-bottle-medical">
+    Marked with a pill/cross icon. Tap to see the pharmacy name, opening hours, and whether it stocks the medication classes listed in your profile. Alowish surfaces 24-hour pharmacies automatically when you are in a High or Very High risk zone.
+  </Card>
+
+  <Card title="Healthy Restaurant Pins" icon="utensils">
+    Marked with a fork-and-leaf icon. Alowish identifies restaurants that can accommodate your dietary needs (allergy flags, diabetic-friendly menus, low-sodium options) and displays them as green dining pins. Tap for cuisine type, allergy notes, and a direct link to the menu.
+  </Card>
+
+  <Card title="Your Location Marker" icon="location-dot">
+    Your real-time position is shown as a pulsing blue circle. The surrounding glow changes color to match your current segment risk band, giving you an instant ambient awareness of your health environment without needing to look at the score panel.
+  </Card>
+</CardGroup>
+
+## Route Comparison Cards
+
+At the bottom of the Life Map screen, Alowish presents side-by-side **Route Comparison Cards** — one for each available route type. Each card shows:
+
+- **Route name** (Train, Motorway, Scenic)
+- **Overall risk score** for the full journey on that route, color-coded to its band
+- **Estimated travel time**
+- **Key risk factors** specific to that route (e.g., *"Altitude gain: 1,200 m"* for Scenic, or *"Air-conditioned carriage reduces heat stress"* for Train)
+
+<Steps>
+  <Step title="View route cards">
+    Tap the **Routes** button in the bottom toolbar to expand the comparison tray. All available route options appear as swipeable cards.
+  </Step>
+  <Step title="Switch your active route">
+    Tap any route card to make it your active route. The map redraws instantly with that route's colored segments and updates your overall risk score in the top panel.
+  </Step>
+  <Step title="Review risk details">
+    Tap the **Details** chevron on a route card to expand a full breakdown — each segment score, the environmental factors driving it, and Alowish's recommendation for that stretch.
+  </Step>
+</Steps>
+
+<Tip>
+  Train routes consistently score lower for cardiac and respiratory travelers because they eliminate exertion, provide climate control, and run through populated corridors with hospital access. Always check the Train card first if one is available.
+</Tip>
+
+## Journey Timeline Bar
+
+A horizontal timeline bar runs along the bottom edge of the map, above the route cards. It represents your entire journey from departure to arrival, colored segment by segment to show how your risk profile evolves over time and distance. Drag the scrubber left or right to preview risk conditions at any point in your journey — useful for planning rest stops, medication timing, or deciding where to overnight.
+
+## Floating Action Buttons (FABs)
+
+Five Floating Action Buttons sit in a vertical stack on the right edge of the Life Map, giving you one-tap access to the services you are most likely to need on the road.
+
+<CardGroup cols={1}>
+  <Card title="Telemedicine" icon="video">
+    Opens a direct connection to Alowish's 24/7 network of travel medicine specialists and cardiologists. Your health profile and current risk score are shared automatically with the specialist at the start of the call, so you do not need to repeat your history.
+  </Card>
+
+  <Card title="Hospitals" icon="hospital">
+    Expands a filtered list of hospitals near your current location, ranked by relevance to your active health verticals. Each entry shows distance, ETA, specialties, and emergency phone number.
+  </Card>
+
+  <Card title="Insurance" icon="file-shield">
+    Opens your travel health insurance panel — policy details, emergency claim contacts, and a pre-populated incident report form tied to your GPS location and current timestamp.
+  </Card>
+
+  <Card title="Pharmacy" icon="prescription-bottle-medical">
+    Shows the nearest open pharmacies filtered to your medication needs, with real-time stock flags where available. Tap any result to get walking or driving directions overlaid on the Life Map.
+  </Card>
+
+  <Card title="Safe Dining" icon="utensils">
+    Surfaces nearby restaurants that meet your dietary and allergy profile, with distance, opening status, and allergy-accommodation notes. Results update as you move.
+  </Card>
+</CardGroup>
+
+## Interacting With the Map
+
+- **Tap a colored route segment** to see a tooltip with the specific environmental parameters driving the risk color at that point (e.g., AQI 142, PM2.5 elevated, temperature 38 °C).
+- **Tap any map pin** to open its popup. Hospital popups include specialty tags relevant to your verticals. Pharmacy popups highlight medication compatibility. Restaurant popups flag allergy risks.
+- **Pinch to zoom** — the map reloads pin density and segment detail at each zoom level, so you get street-level granularity when you need it and a regional overview when planning ahead.
+- **Long-press the map** to drop a custom waypoint and get an instant risk score for that specific location given current conditions.
+
+<Note>
+  Life Map data refreshes every 60 seconds when you are actively traveling. In areas with limited connectivity, Alowish caches the last known risk layer and displays a banner indicating the age of the cached data so you are never unaware of a stale reading.
+</Note>

@@ -1,0 +1,221 @@
+---
+title: 'POST /v1/risk/assess — Travel Health Risk Score'
+sidebarTitle: 'Risk Assessment'
+description: 'Calculate a personalized travel health risk score (0–100) by fusing a traveler health profile with real-time environmental and route data.'
+---
+
+The risk assessment endpoint is the core of the Alowish API. Submit a traveler's health profile ID, a destination coordinate, a travel date, and a transport mode, and the engine fuses the traveler's medical history, current medications, and personal risk factors with live environmental data — air quality, temperature, altitude, humidity, and more — to return a composite risk score alongside actionable recommendations and severity-graded alerts. The entire process runs in real time, so the score reflects conditions at the moment of the request, not a static historical average.
+
+## Endpoint
+
+```http
+POST /v1/risk/assess
+```
+
+## Request Body
+
+<ParamField body="profile_id" type="string" required>
+  The unique identifier of the traveler's health profile, obtained from `POST /v1/profile`. The profile must exist and contain at least one health condition, medication, or personal factor for the score to reflect personalized risk.
+</ParamField>
+
+<ParamField body="destination" type="object" required>
+  An object describing the travel destination.
+
+  <Expandable title="destination fields">
+    <ParamField body="destination.lat" type="number" required>
+      Latitude of the destination in decimal degrees (WGS 84). Valid range: –90 to 90.
+    </ParamField>
+    <ParamField body="destination.lng" type="number" required>
+      Longitude of the destination in decimal degrees (WGS 84). Valid range: –180 to 180.
+    </ParamField>
+    <ParamField body="destination.name" type="string" required>
+      Human-readable name of the destination (for example, `"Athens, Greece"`). Used in recommendation text and alert messages in the response.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="travel_date" type="string" required>
+  The intended date and time of arrival or departure in ISO 8601 format (`YYYY-MM-DDTHH:mm:ssZ`). The engine uses this to fetch forecasted environmental conditions rather than purely real-time conditions, improving accuracy for future trips.
+</ParamField>
+
+<ParamField body="transport_mode" type="string" required>
+  The primary mode of transport for the journey. Affects cabin pressure modelling (for flights), exertion estimates (for walking), and route-specific risk sub-scores.
+
+  Allowed values: `"train"` · `"car"` · `"flight"` · `"walk"`
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="risk_score" type="number">
+  A composite health risk score from **0** (negligible risk) to **100** (extreme risk), calculated by the Alowish multi-layer risk engine. Scores above 70 are considered high; above 85 are very high.
+</ResponseField>
+
+<ResponseField name="risk_level" type="string">
+  A human-readable risk tier derived from `risk_score`.
+
+  | Value | Score Range | Meaning |
+  |-------|-------------|---------|
+  | `low` | 0–34 | Travel is generally safe given the profile |
+  | `moderate` | 35–59 | Some precautions recommended |
+  | `high` | 60–79 | Significant risk factors present; consult a physician |
+  | `very_high` | 80–100 | Travel not advised without specialist clearance |
+</ResponseField>
+
+<ResponseField name="confidence" type="number">
+  A value between **0** and **1** indicating how much environmental data was available at scoring time. A confidence below 0.6 means some environmental feeds were unavailable and the score is partially estimated.
+</ResponseField>
+
+<ResponseField name="subnetwork_scores" type="object">
+  A breakdown of risk by Alowish sub-network (SN), where each SN models a different physiological system or risk dimension (for example, cardiovascular, respiratory, thermal). Keys are `SN1`, `SN2`, etc. Values are scores from 0–100.
+
+  <Expandable title="Example subnetwork_scores">
+    ```json
+    {
+      "SN1": 82,
+      "SN2": 67,
+      "SN3": 44,
+      "SN4": 31
+    }
+    ```
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="recommendations" type="string[]">
+  An ordered list of plain-language recommendations tailored to the traveler's profile and destination conditions. Act on recommendations in the order they appear — they are sorted by priority.
+</ResponseField>
+
+<ResponseField name="alerts" type="array">
+  A list of active alerts relevant to this traveler and destination at the time of the request.
+
+  <Expandable title="Alert object fields">
+    <ResponseField name="alerts[].type" type="string">
+      A short machine-readable alert category, for example `"heat_stress"`, `"poor_air_quality"`, or `"altitude_risk"`.
+    </ResponseField>
+    <ResponseField name="alerts[].severity" type="string">
+      One of `"info"`, `"warning"`, or `"critical"`. Display `critical` alerts prominently in your UI.
+    </ResponseField>
+    <ResponseField name="alerts[].message" type="string">
+      A human-readable description of the alert, suitable for display to end users.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="environmental_snapshot" type="object">
+  The real-time (or forecasted) environmental conditions at the destination used to compute the score.
+
+  <Expandable title="environmental_snapshot fields">
+    <ResponseField name="environmental_snapshot.temperature" type="number">
+      Ambient temperature in degrees Celsius.
+    </ResponseField>
+    <ResponseField name="environmental_snapshot.aqi" type="number">
+      Air Quality Index (AQI) on the 0–500 US EPA scale. Values above 150 are unhealthy for sensitive groups.
+    </ResponseField>
+    <ResponseField name="environmental_snapshot.altitude" type="number">
+      Altitude of the destination in metres above sea level.
+    </ResponseField>
+    <ResponseField name="environmental_snapshot.humidity" type="number">
+      Relative humidity as a percentage (0–100).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Example: Cardiac Patient Traveling to Athens in August
+
+The following scenario illustrates a traveler with a documented cardiac condition planning a flight to Athens during a summer heatwave. The engine combines the cardiovascular subnetwork risk with extreme heat and elevated AQI to produce a `high` risk score.
+
+<CodeGroup>
+
+```bash curl
+curl -X POST https://api.alowish.com/v1/risk/assess \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profile_id": "prof_cardiac_001",
+    "destination": {
+      "lat": 37.9838,
+      "lng": 23.7275,
+      "name": "Athens, Greece"
+    },
+    "travel_date": "2025-08-14T09:00:00Z",
+    "transport_mode": "flight"
+  }'
+```
+
+```javascript JavaScript (fetch)
+const response = await fetch('https://api.alowish.com/v1/risk/assess', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.ALOWISH_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    profile_id: 'prof_cardiac_001',
+    destination: {
+      lat: 37.9838,
+      lng: 23.7275,
+      name: 'Athens, Greece',
+    },
+    travel_date: '2025-08-14T09:00:00Z',
+    transport_mode: 'flight',
+  }),
+});
+
+const assessment = await response.json();
+
+if (assessment.risk_level === 'high' || assessment.risk_level === 'very_high') {
+  // Surface recommendations and critical alerts in your UI
+  console.warn('High risk travel detected:', assessment.alerts);
+}
+```
+
+</CodeGroup>
+
+**Example response:**
+
+```json
+{
+  "risk_score": 74,
+  "risk_level": "high",
+  "confidence": 0.93,
+  "subnetwork_scores": {
+    "SN1": 85,
+    "SN2": 71,
+    "SN3": 58,
+    "SN4": 40
+  },
+  "recommendations": [
+    "Consult your cardiologist before travelling during extreme heat periods.",
+    "Carry a 7-day supply of all cardiac medications in your carry-on luggage.",
+    "Avoid outdoor exertion between 11:00 and 18:00 local time.",
+    "Ensure travel insurance explicitly covers cardiac events abroad.",
+    "Identify the nearest cardiology unit on arrival: Evangelismos Hospital, 2.1 km from city centre."
+  ],
+  "alerts": [
+    {
+      "type": "heat_stress",
+      "severity": "critical",
+      "message": "Athens is forecast to reach 41 °C on your travel date. Extreme heat significantly elevates cardiac strain for your profile."
+    },
+    {
+      "type": "poor_air_quality",
+      "severity": "warning",
+      "message": "AQI is forecast at 138 (unhealthy for sensitive groups) due to seasonal wildfire smoke. Use a filtered mask outdoors."
+    },
+    {
+      "type": "flight_cabin_pressure",
+      "severity": "info",
+      "message": "Reduced cabin pressure during the flight may cause mild fluid retention. Stay hydrated and move around the cabin every hour."
+    }
+  ],
+  "environmental_snapshot": {
+    "temperature": 41,
+    "aqi": 138,
+    "altitude": 70,
+    "humidity": 28
+  }
+}
+```
+
+<Note>
+  The Alowish engine fuses data from multiple real-time environmental feeds — meteorological services, satellite AQI feeds, altitude databases, and local health authority alerts — to build the `environmental_snapshot` at score time. The `confidence` field tells you how complete that fusion was. If `confidence` drops below `0.6`, consider surfacing a caveat to your users alongside the score.
+</Note>
